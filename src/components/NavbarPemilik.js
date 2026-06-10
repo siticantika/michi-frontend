@@ -40,17 +40,20 @@ function NavbarPemilik({ open, setOpen }) {
   ];
 
   useEffect(() => {
-    const sendBeacon = () => {
-      const token = localStorage.getItem('token');
-      if (!token) return;
-      const blob = new Blob(
-        [JSON.stringify({ token })],
-        { type: 'application/json' }
-      );
-      navigator.sendBeacon
-      `${process.env.REACT_APP_API_URL}/api/logout-beacon`,
-      blob
-    };
+   const sendBeacon = () => {
+  const token = localStorage.getItem('token');
+  if (!token) return;
+
+  const blob = new Blob(
+    [JSON.stringify({ token })],
+    { type: 'application/json' }
+  );
+
+  navigator.sendBeacon(
+    `${process.env.REACT_APP_API_URL}/api/logout-beacon`,
+    blob
+  );
+};
 
     const handleBeforeUnload = () => sendBeacon();
 
