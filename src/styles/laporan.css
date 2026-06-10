@@ -1,0 +1,484 @@
+.laporan-owner-bg {
+	background: #e5e5e5;
+	min-height: 100vh;
+	padding-top: 72px; /* reserve space for fixed header */
+	overflow-x: hidden; /* prevent horizontal scroll on laporan page */
+}
+:root {
+	--summary-card-fixed: 414px;
+	--summary-card-height: 140px;
+	/* use computed third-of-row width for export card so it can expand on wide screens */
+	--export-card-max: calc((100% - 4px) / 3);
+}
+.laporan-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: linear-gradient(90deg, #ff7a5c, #ffd166);
+	color: #fff;
+	padding: 0 24px;
+	height: 72px;
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+	position: sticky;
+	top: 0;
+	z-index: 100;
+}
+
+/* ensure main dashboard header (used in page) is fixed so title stays visible */
+.laporan-owner-bg .dashboard-header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 1000;
+}
+
+.laporan-logo-group {
+	display: flex;
+	align-items: center;
+}
+.laporan-logo {
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	background: #ffd600;
+	object-fit: cover;
+	margin-right: 14px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+.laporan-title {
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	color: #fff;
+	font-size: 1.25rem;
+	letter-spacing: 0.5px;
+}
+/* Nav styles moved to dashboard.css for consistency */
+.laporan-nav {
+	display: flex;
+	gap: 36px;
+}
+.pemilik-nav-link {
+	color: #fff;
+	font-size: 0.95rem;
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	text-decoration: none;
+	padding: 0;
+	background: none;
+	border: none;
+	cursor: pointer;
+	transition: color 0.2s;
+}
+.pemilik-nav-link.active,
+.pemilik-nav-link:hover {
+	color: #ffd600;
+}
+.pemilik-nav-link.logout {
+	color: #8f2100 !important;
+	font-weight: bold;
+	margin-left: 32px;
+}
+.pemilik-nav-link.logout:hover,
+.pemilik-nav-link.logout.active {
+	color: #ff7043 !important;
+}
+.logout-icon {
+	margin-left: 6px;
+}
+.laporan-main {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 0 0 40px;
+	padding-bottom: 20px;
+}
+.laporan-main-title {
+	text-align: center;
+	font-family: 'Poppins', Arial, sans-serif;
+	font-size: 1.3rem;
+	font-weight: 800;
+	color: #5a3e2b;
+	margin: 30px 0 25px;
+	letter-spacing: 2px;
+}
+
+/* Scroll container for content under the title - header and title remain static */
+.laporan-scroll {
+	width: 94%;
+	max-width: 1500px;
+	margin: 0 auto;
+	max-height: calc(100vh - 72px - 80px);
+	overflow-y: auto;
+	padding-right: 8px;
+
+}
+
+.laporan-scroll::-webkit-scrollbar { width: 10px }
+.laporan-scroll::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 6px }
+
+.laporan-filter-box {
+	background: #fff; /* white filter box */
+	border: 2px solid #ffd6e0;
+	border-radius: 18px;
+	padding: 16px 24px;
+	margin-bottom: 24px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 20px;
+	flex-wrap: wrap;
+	width: 100%;
+	max-width: 1500px;
+	margin: 0 auto 24px auto;
+}
+.laporan-filter-label {
+	color: #fff;
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	font-size: 1.2rem;
+	margin-bottom: 12px;
+}
+.laporan-filter-select {
+	width: 250px; /* narrower selects */
+	padding: 8px 19px;
+	border-radius: 10px;
+	border: none;
+	font-size: 1rem;
+	background: #fff3e0;
+	color: #a67c52;
+	outline: none;
+	margin-top: 7px;
+}
+
+.laporan-filter-field {
+	display: flex;
+	flex-direction: column;
+}
+.laporan-cards {
+	display: flex;
+	gap: 39px; /* slightly reduced gap to help fit three cards */
+	justify-content: space-between;
+	align-items: stretch; /* ensure child cards get equal height */
+	width: 100%;
+	max-width: 1500px;
+	margin: 25px auto 40px auto;
+	box-sizing: border-box;
+	flex-wrap: wrap; /* allow wrapping instead of horizontal scroll */
+}
+.laporan-card {
+	background: #ffffff;
+	border-radius: 20px;
+	border: 2px solid #ffd6e0;
+	/* use Dashboard padding/box-shadow so height and visual weight match */
+	padding: 30px 18px;
+	box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+	display: flex;
+	flex-direction: row;
+	gap: 12px;
+	align-items: center;
+	transition: 0.18s;
+	min-height: 140px;
+	/* allow cards to shrink/wrap to avoid horizontal scrolling */
+	box-sizing: border-box;
+	height: var(--summary-card-height);
+	flex: 1 1 var(--summary-card-fixed);
+	width: 100%;
+	max-width: 100% !important;
+	
+}
+.laporan-card:hover {
+	transform: translateY(-4px);
+
+}
+.laporan-card:active { transform: scale(0.97); }
+
+/* Remove full-color backgrounds; use colored accents for values */
+.laporan-card.pemasukan {
+	background: #fff;
+}
+.laporan-card.pengeluaran {
+	background: #fff;
+}
+.laporan-card.laba {
+	background: #fff;
+}
+.laporan-card-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 88px;
+	height: 88px;
+	border-radius: 12px;
+	background: #fdebea; /* subtle pink background like dashboard */
+	color: #d32f2f;
+	font-size: 2.5rem;
+	flex: 0 0 auto;
+	margin-right: 12px;
+}
+
+.laporan-card-content {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: center; /* vertically center content so cards match */
+	gap: 6px;
+}
+.laporan-card-title {
+	font-size: 0.8rem; /* match Dashboard */
+	color: #999;
+	font-weight: 700;
+	margin-bottom: 6px;
+}
+.laporan-card-value {
+	font-size: 1.2rem;
+	font-weight: 800;
+	color: #4a3c2a;
+}
+
+/* Colored value accents */
+.laporan-card.pemasukan .laporan-card-value { color: #00b894; }
+.laporan-card.pengeluaran .laporan-card-value { color: #d32f2f; }
+.laporan-card.laba.positive .laporan-card-value { color: #2e7d32; }
+.laporan-card.laba.negative .laporan-card-value { color: #d32f2f; }
+.laporan-card-desc {
+	color: #555;
+	font-size: 1rem; /* slightly larger to match dashboard */
+}
+.laporan-table-box {
+	background: #fff;
+	border-radius: 18px;
+	border: 2px solid #ffd6e0;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+	padding: 0 0 18px 0;
+	margin-bottom: 24px;
+	width: 100%;
+	max-width: 1500px;
+	margin-left: auto;
+	margin-right: auto;
+	box-sizing: border-box;
+}
+
+/* Top row: combined filter card + export card */
+.laporan-top-row {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 48px; /* increased gap so year, month, export boxes have more space */
+	width: 100%;
+	max-width: 1500px;
+	margin: 0px auto 14px auto; /* less vertical gap so cards sit closer under title */
+	align-items: center;
+	box-sizing: border-box;
+}
+
+/* keep filter cards fixed-sized inside the top row so widths align exactly */
+.laporan-top-row > .filter-card { flex: 0 0 auto; }
+.filter-card {
+	flex: 1 1 320px; /* default card base */
+	max-width: 380px; /* keep cards compact */
+	background: #fff;
+	border: 2px solid #ffd6e0;
+	border-radius: 18px;
+	padding: 25px 40px; /* slightly less padding */
+	box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 20px;
+}
+.filter-card.year-card { flex: 1 1 var(--summary-card-fixed); max-width: var(--summary-card-fixed); }
+.filter-card.month-card { flex: 1 1 var(--summary-card-fixed); max-width: var(--summary-card-fixed); }
+.filter-card.format-card { display: flex; align-items: center; gap: 20px; /* removed margin-left:auto so spacing controlled by gap */ flex: 1 1 var(--summary-card-fixed); max-width: var(--summary-card-fixed); }
+.filter-card.format-card .laporan-filter-select { width: 180px; padding: 8px 12px; }
+.filter-card.format-card .download-btn { flex: 0 0 auto; min-width: 0; padding: 9px 25px; border-radius: 10px; }
+.download-btn {
+		padding: 8px 12px;
+		border-radius: 1px;
+		background: linear-gradient(90deg,#ff7a5c,#ffd166);
+		color: #fff;
+		border: none;
+		cursor: pointer;
+		font-weight: 700;
+}
+
+@media (max-width: 900px) {
+	.filter-card.format-card { width: 100%; justify-content: flex-start; }
+	.download-btn { margin-left: 8px; }
+}
+
+/* narrower selects per card to match mock */
+.filter-card.year-card .laporan-filter-select {
+	width: 220px;
+	padding: 8px 20px;
+	font-size: 0.98rem;
+}
+.filter-card.month-card .laporan-filter-select {
+	width: 220px;
+	padding: 8px 20px;
+	font-size: 0.98rem;
+}
+.filter-card-content {
+	display: flex;
+	gap: 18px;
+	align-items: center;
+}
+.filter-item {
+	display: flex;
+	flex-direction: column;
+}
+.filter-item-label {
+	font-size: 1.15rem;
+	color: #6d2c00;
+	margin-bottom: 0;
+	margin-right: 1px;
+	white-space: nowrap;
+	font-weight: 700;
+}
+/* Place filter cards into grid columns 1/2/3 to align with summary cards */
+.filter-card.year-card { grid-column: 1 }
+.filter-card.month-card { grid-column: 2 }
+.filter-card.format-card { grid-column: 3 }
+
+/* Place summary cards in a single row using flexbox (no grid placement) */
+/* (No explicit grid-column rules - use flex distribution above) */
+
+/* Make the chart and table span all three columns but respect the page max-width */
+.grafik-container { grid-column: 1 / 4; width: 100%; max-width: 1500px; margin: 8px auto 22px; box-sizing: border-box }
+/* also allow GrafikLaporan's .grafik-card to span the grid when inserted directly */
+.grafik-card { grid-column: 1 / 4; width: 100%; max-width: 1500px; margin: 8px auto 22px; box-sizing: border-box }
+.laporan-table-box { grid-column: 1 / 4 }
+.export-card {
+	background: #fff;
+	border: 2px solid #ffd6e0;
+	border-radius: 18px;
+	padding: 14px 18px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	/* match summary card width so export card equals laba rugi */
+	max-width: var(--summary-card-fixed);
+	flex: 0 0 auto;
+}
+.export-card-title {
+	font-weight: 700;
+	color: #6d2c00;
+}
+.export-card-body {
+	display: flex;
+	flex-direction: row; /* place buttons side-by-side */
+	gap: 10px;
+}
+.export-btn {
+	padding: 20px 22px;
+	border-radius: 10px;
+	border: none;
+	cursor: pointer;
+	font-weight: 700;
+	flex: 1; /* share available width */
+}
+.export-btn.pdf {
+	background: linear-gradient(90deg,#ff7a5c,#ffd166);
+	color: #fff;
+}
+.export-btn.excel {
+	background: linear-gradient(90deg,#43a047,#66bb6a);
+	color: #fff;
+}
+
+/* Make laba card width follow the export filter card's computed max width so they match */
+/* Make laba card width follow the export card's computed max width so they match */
+.laporan-card.laba {
+	flex: 0 0 var(--export-card-max);
+	width: var(--export-card-max) !important;
+	max-width: var(--export-card-max) !important;
+}
+
+@media (max-width: 900px) {
+	.laporan-top-row { flex-direction: column; align-items: stretch; }
+	.export-card { width: 100%; }
+	.filter-card { width: 100%; }
+	.filter-card-content { flex-direction: column; align-items: stretch; }
+	.export-card-body { flex-direction: column; }
+}
+.laporan-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 0 0 0 0;
+	font-size: 1rem;
+}
+.laporan-table th, .laporan-table td {
+	padding: 10px 18px;
+	text-align: left;
+}
+.laporan-table th {
+	background: linear-gradient(90deg,#ff7a5c,#ffd166);
+	color: #fff;
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	font-size: 1.05rem;
+	border-bottom: none;
+}
+.laporan-table tbody tr:nth-child(even) {
+	background: #fff;
+}
+.laporan-table tbody tr:nth-child(odd) {
+	background: #fff8f5;
+}
+.laporan-status.untung {
+	background: transparent;
+	color: #2e7d32;
+	border-radius: 10px;
+	padding: 2px 10px;
+	font-size: 0.95rem;
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+}
+.laporan-badge {
+	display: inline-block;
+	border-radius: 10px;
+	padding: 2px 10px;
+	font-size: 0.95rem;
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	margin-right: 6px;
+	color: #fff;
+}
+.laporan-badge.pemasukan {
+	background: #00b894;
+}
+.laporan-badge.pengeluaran {
+	background: #d32f2f;
+}
+
+@media (max-width: 1024px) {
+  .laporan-main {
+    padding: 16px 18px;
+  }
+
+	.laporan-cards {
+		flex-wrap: wrap;
+		margin-top: 12px;
+	}
+}
+
+@media (max-width: 480px) {
+
+  .laporan-header {
+    padding: 10px 14px;
+  }
+
+  .laporan-title {
+    font-size: 1.1rem;
+  }
+
+  /* Nav styles moved to dashboard.css */
+
+  .laporan-card-value {
+    font-size: 1.15rem;
+  }
+
+  .laporan-table {
+    font-size: 0.85rem;
+  }
+}
+
+
+

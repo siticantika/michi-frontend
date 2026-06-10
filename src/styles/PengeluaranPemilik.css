@@ -1,0 +1,456 @@
+/* POPUP TAMBAH PENGELUARAN */
+.pengeluaran-popup-bg {
+	position: fixed !important;
+  inset: 0 !important;
+  background: rgba(0,0,0,0.35) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 9999 !important;
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+}
+.pengeluaran-popup-pemilik{
+  background: #fffaf5 !important;
+  color: #4a4a4a !important;
+  border-radius: 20px !important;
+  width: 420px !important;
+  max-width: 95vw !important;
+  padding: 20px 22px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  border: 3px solid #ffd6a5 !important;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.25) !important;
+}
+
+.pengeluaran-popup-headerpemilik{
+  display: flex !important;
+  justify-content: center !important;
+  position: relative !important;
+  margin-bottom: 4px !important;
+  background: transparent !important;
+}
+.pengeluaran-popup-title {
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #5a3e2b;
+  margin: 30px 0 25px;
+  letter-spacing: 2px;
+}
+
+.pengeluaran-popup-close {
+	background: none;
+	border: none;
+	color: #ffb3b3;
+	font-size: 2.2rem;
+	font-weight: bold;
+	cursor: pointer;
+	margin-left: 12px;
+	position: absolute;
+	top: 24px;
+	right: 32px;
+}
+.pengeluaran-popup-form {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+}
+.pengeluaran-popup-row {
+	display: flex;
+	gap: 24px;
+}
+.pengeluaran-popup-field {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	margin-bottom: 0;
+}
+.pengeluaran-popup-field label {
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	color: #fff;
+	font-size: 1.2rem;
+	margin-bottom: 6px;
+}
+.pengeluaran-popup-input {
+	width: 100%;
+	padding: 12px 18px;
+	border-radius: 18px;
+	border: none;
+	background: #fff3e0;
+	font-size: 1.1rem;
+	outline: none;
+	color: #a67c52;
+	margin-bottom: 0;
+}
+.pengeluaran-popup-btn {
+	width: 100%;
+	margin-top: 18px;
+	padding: 16px 0;
+	background: #d2b48c;
+	color: #a80000;
+	font-size: 1.3rem;
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	border: none;
+	border-radius: 18px;
+	cursor: pointer;
+	letter-spacing: 2px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	transition: background 0.2s;
+}
+.pengeluaran-popup-btn:hover {
+	background: #ffd600;
+	color: #a80000;
+}
+.pengeluaran-owner-bg {
+	background: #fff5f7;
+	min-height: 100vh;
+}
+.pengeluaran-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: linear-gradient(90deg, #ff7a5c, #ffd166);
+	color: #fff;
+	padding: 0 24px;
+	height: 72px;
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+	position: sticky;
+	top: 0;
+	z-index: 100;
+}
+.pengeluaran-logo-group {
+	display: flex;
+	align-items: center;
+}
+.pengeluaran-logo {
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	background: #ffd600;
+	object-fit: cover;
+	margin-right: 14px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+.pengeluaran-title {
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	color: #fff;
+	font-size: 1.25rem;
+	letter-spacing: 0.5px;
+}
+/* Nav styles moved to dashboard.css for consistency */
+.pengeluaran-nav {
+	display: flex;
+	gap: 36px;
+}
+.pemilik-nav-link {
+	color: #8f2100 !important;
+	font-size: 0.95rem;
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+	transition: color 0.2s;
+}
+.pemilik-nav-link.active,
+.pemilik-nav-link:hover {
+	color: #ff7043 !important;
+}
+.pemilik-nav-link.logout {
+	color: #8f2100 !important;
+	font-weight: bold;
+	margin-left: 32px;
+}
+.pemilik-nav-link.logout:hover,
+.pemilik-nav-link.logout.active {
+	color: #ff7043 !important;
+}
+.logout-icon {
+	margin-left: 6px;
+}
+.pengeluaran-main {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 0 0 40px;
+	padding-bottom: 60px;
+}
+.pengeluaran-main-title {
+	text-align: center;
+	font-family: 'Poppins', Arial, sans-serif;
+	font-size: 1.3rem;
+	font-weight: 800;
+	color: #5a3e2b;
+	margin: 30px 0 25px;
+	letter-spacing: 2px;
+}
+.pengeluaran-card-box {
+	background: linear-gradient(to bottom, #ff1a1a, #ff9900);
+	border-radius: 32px;
+	padding: 12px 32px 24px 32px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+	margin: 0 auto;
+	max-width: 900px;
+	position: relative;
+}
+.stat-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pengeluaran-add-btn {
+	width: 70%;
+	padding: 20px 20px; /* smaller height than card */
+	background: #ff6b6b; /* red for pengeluaran add button */
+	color: #fff;
+	border: none;
+	border-radius: 15px;
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	font-size: 1.15rem;
+	font-weight: 700;
+	cursor: pointer;
+	transition: background 0.2s;
+}
+
+/* Page-specific override: increase spacing between stat cards so
+	 the add-button column lines up with the right edge of the table */
+.pengeluaran-main .owner-summary-stats {
+	gap: 50px; /* larger horizontal gap for Pengeluaran page */
+	margin-bottom: 42px;
+}
+
+.stat-add-box {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0; /* ensure no extra spacing from wrapper */
+}
+
+.stat-add-box .pengeluaran-add-btn {
+	width: 100%;
+	max-width: 100%;
+}
+.pengeluaran-add-btn:hover {
+	background: #ff3b3b;
+}
+
+/* Ensure pengeluaran page add button is red (explicit) */
+.pengeluaran-owner-bg .pengeluaran-add-btn {
+	background: #ff6b6b;
+	color: #fff;
+}
+
+/* neutral container for the add-button column: not a card */
+.stat-add-box {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: transparent;
+	border: none;
+	box-shadow: none;
+	padding: 0;
+}
+
+.pengeluaran-table-box {
+ 	background: none;
+ 	border-radius: 24px;
+ 	margin-top: 24px;
+	max-height: 400px;
+	overflow-y: auto;
+
+  /* match dashboard table horizontal spacing */
+  width: 94%;
+  max-width: 1500px;
+  margin: 24px auto 0 auto;
+  padding: 0 18px; /* left/right spacing matches dashboard */
+  box-sizing: border-box;
+}
+.pengeluaran-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 1rem;
+	background: none;
+}
+.pengeluaran-table th, .pengeluaran-table td {
+	padding: 12px 18px;
+	text-align: left;
+}
+.pengeluaran-table th {
+	background: #ff8a8a;
+	color: #fff;
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	font-size: 1.1rem;
+}
+.pengeluaran-table tbody tr {
+	background: #d32f2f;
+	color: #fff;
+}
+.pengeluaran-table tbody tr td.bold {
+	font-weight: bold;
+	font-size: 1.1rem;
+}
+.badge.kasir {
+	background: #ff9800;
+	color: #fff;
+	border-radius: 10px;
+	padding: 2px 10px;
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	font-size: 0.95rem;
+}
+.pengeluaran-hapus-btn {
+	background: #f5e3d3;
+	color: #a67c52;
+	border: none;
+	border-radius: 12px;
+	padding: 6px 18px;
+	font-size: 1rem;
+	cursor: pointer;
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	transition: background 0.2s;
+}
+.pengeluaran-hapus-btn:hover {
+	background: #ffd600;
+	color: #d32f2f;
+}
+.pengeluaran-edit-btn {
+	background: #f5e3d3;
+	color: #a67c52;
+	border: none;
+	border-radius: 18px;
+	padding: 6px 14px;
+	font-size: 0.95rem;
+	cursor: pointer;
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	transition: background 0.15s;
+}
+.pengeluaran-edit-btn:hover {
+	background: #ffd600;
+	color: #a80000;
+}
+.pengeluaran-total-box {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	margin-top: 24px;
+	font-size: 1.2rem;
+	color: #fff;
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+}
+.pengeluaran-total {
+	margin-left: 18px;
+	font-size: 1.3rem;
+	color: #fff;
+}
+
+/* Ensure pemasukan popup uses same visual style when this CSS is loaded */
+.pemasukan-popup-bg {
+	position: fixed !important;
+	inset: 0 !important;
+	background: rgba(0,0,0,0.35) !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	z-index: 9999 !important;
+	backdrop-filter: blur(6px) !important;
+	-webkit-backdrop-filter: blur(6px) !important;
+}
+
+.pemasukan-popup {
+	background: #fffaf5 !important;
+	color: #4a4a4a !important;
+	border-radius: 20px !important;
+	width: 420px !important;
+	max-width: 95vw !important;
+	padding: 20px 22px !important;
+	display: flex !important;
+	flex-direction: column !important;
+	gap: 12px !important;
+	border: 3px solid #ffd6a5 !important;
+	box-shadow: 0 18px 40px rgba(0,0,0,0.25) !important;
+}
+
+.pemasukan-popup-header {
+	display: flex !important;
+	justify-content: center !important;
+	position: relative !important;
+	margin-bottom: 4px !important;
+	background: transparent !important;
+}
+
+.pemasukan-popup-header span:first-child {
+	font-family: 'Luckiest Guy', cursive, sans-serif !important;
+	font-size: 1.1rem !important;
+	font-weight: 700 !important;
+	color: #5d4037 !important;
+	text-align: center !important;
+}
+
+.pemasukan-popup-close {
+	position: absolute !important;
+	right: 0 !important;
+	background: transparent !important;
+	border: none !important;
+	color: #ffbc42 !important;
+	font-weight: 700 !important;
+	cursor: pointer !important;
+	font-size: 1.3rem !important;
+	padding: 4px 8px !important;
+	border-radius: 8px !important;
+}
+
+.pemasukan-popup-form label {
+	display: block !important;
+	font-size: 0.88rem !important;
+	font-weight: 600 !important;
+	color: #774747 !important;
+	margin-bottom: 5px !important;
+}
+
+.pemasukan-popup-input {
+	width: 100% !important;
+	padding: 10px 14px !important;
+	border-radius: 12px !important;
+	border: 2px solid #ffd6a5 !important;
+	background: #fff6e0 !important;
+	font-size: 0.95rem !important;
+	font-weight: 500 !important;
+	color: #5d4037 !important;
+	outline: none !important;
+	box-sizing: border-box !important;
+	font-family: 'Poppins', Arial, sans-serif !important;
+	margin-bottom: 12px !important;
+}
+
+.pemasukan-popup-input::placeholder { color: #bbb !important; }
+
+.pemasukan-popup-input:focus { border-color: #ff7a5c !important; background: #fff !important; }
+
+.pemasukan-popup-btn {
+	width: 100% !important;
+	padding: 12px 14px !important;
+	background: #ffab91 !important;
+	color: #5d4037 !important;
+	border: none !important;
+	border-radius: 14px !important;
+	font-weight: 700 !important;
+	font-size: 1rem !important;
+	cursor: pointer !important;
+	box-shadow: 0 6px 18px rgba(0,0,0,0.10) !important;
+	margin-top: 4px !important;
+	font-family: 'Poppins', Arial, sans-serif !important;
+	transition: background 0.15s !important;
+}
+
+.pemasukan-popup-btn:hover { background: #ff7043 !important; color: #fff !important; }
+
+
+

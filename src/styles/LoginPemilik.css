@@ -1,0 +1,412 @@
+html, body, #root {
+	background: #fcb7a2;
+	height: 100%;
+	margin: 0;
+}
+
+body {
+	background: transparent;
+}
+
+
+
+.login-logo {
+	margin-bottom: 16px;
+}
+
+.login-img {
+	width: 120px;
+	height: 120px;
+	border-radius: 50%;
+	background: #efd763;
+	object-fit: cover;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+
+.login-title {
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	color: #fff;
+	font-size: 2.2rem;
+	margin-bottom: 32px;
+	letter-spacing: 2px;
+}
+
+.login-form {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+}
+
+.login-label {
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	color: #fff;
+	font-size: 1.2rem;
+	margin-bottom: 6px;
+}
+
+.login-input {
+	width: 100%;
+	padding: 12px 18px;
+	border-radius: 14px;
+	border: none;
+	background: #fff3e0;
+	font-size: 1rem;
+	margin-bottom: 8px;
+	outline: none;
+	color: #a67c52;
+}
+
+.login-btn {
+	width: 60%;
+	margin: 18px auto 0 auto;
+	padding: 12px 0;
+	background: #a80000;
+	color: #fff;
+	font-size: 1.1rem;
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	border: none;
+	border-radius: 16px;
+	cursor: pointer;
+	letter-spacing: 2px;
+	transition: background 0.2s;
+}
+.login-btn:hover {
+	background: #d32f2f;
+}
+
+
+
+.login-bg, .login-bg-overlay {
+	display: none !important;
+}
+
+/* Improve card contrast */
+.login-container {
+	box-shadow: 0 26px 70px rgba(0,0,0,0.18);
+	background-clip: padding-box; /* prevent bleed */
+}
+.login-container > * { position: relative; z-index: 3; }
+
+/* Popup: reuse TambahMenu-style modal for owner login (scoped to login pages only) */
+.login-container .popup-overlay {
+	position: fixed;
+	inset: 0;
+	background: transparent; /* no dimming for login page */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 10005;
+}
+
+.popup-menu-wrapper {
+	position: relative;
+	background: #fffaf5;
+	border-radius: 24px;
+	width: 460px;
+	max-width: 95vw;
+	box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+	border: 3px solid #ffd6a5;
+	display: flex;
+	flex-direction: column;
+	overflow: visible !important;
+	margin-top: 0 !important;
+}
+
+/* position container so avatar can overlap correctly */
+.popup-menu-wrapper {
+	position: relative;
+}
+
+.popup-menu-header-pemilik {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 70px 22px 16px 22px;
+	flex-shrink: 0;
+	border-bottom: none;
+}
+
+.popup-menu-header-pemilik span:first-child {
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	font-size: 1.1rem;
+	font-weight: 700;
+	color: #5d4037;
+	text-align: center;
+
+}
+
+.popup-close {
+	position: absolute;
+	right: 16px;
+	background: transparent;
+	border: none;
+	color: #ffbc42;
+	font-weight: 700;
+	cursor: pointer;
+	font-size: 1.3rem;
+	padding: 4px 8px;
+}
+
+	popup-menu-body {
+		overflow-y: auto;
+		flex: 1;
+	}
+.popup-form {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.popup-input {
+	width: 100%;
+	padding: 10px 16px;
+	border-radius: 15px;
+	border: 2px solid #ffd6a5;
+	background: #fff3e6;
+	color: #a80000;
+	font-family: 'Poppins', Arial, sans-serif;
+	font-size: 1.05rem;
+	outline: none;
+}
+
+.popup-menu-footer {
+	padding: 12px 22px;
+	flex-shrink: 0;
+}
+
+.popup-save-btn {
+	width: 100%;
+	padding: 12px 14px;
+	background: #ffab91;
+	color: #5d4037;
+	border: none;
+	border-radius: 14px;
+	font-weight: 700;
+	font-size: 1rem;
+	cursor: pointer;
+	box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.popup-save-btn:hover { background: #ff7043; color:#fff; }
+
+/* hide original logo/title on this page */
+.login-logo, .login-title {
+	display: none;
+}
+
+/* Avatar overlapping top of modal */
+.popup-avatar {
+	position: absolute;
+	top: -60px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 120px;
+	height: 120px;
+	border-radius: 50%;
+	background: #e6c843;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+	border: 5px solid #ffffff;
+	z-index: 10010;
+	overflow: hidden;
+}
+
+.popup-avatar img {
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+/* enlarge modal slightly to match design */
+.popup-menu-wrapper {
+	width: 560px; /* make modal wider */
+	max-width: 96vw;
+}
+
+.popup-menu-wrapper {
+	width: 460px;
+	max-width: 95vw;
+}
+
+.popup-menu-header-pemilik span:first-child {
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	font-size: 1.3rem;
+	font-weight: 700;
+	color: #5d4037;
+	text-align: center;
+	letter-spacing: 1px;
+}
+
+
+
+.popup-form label {
+	font-size: 0.88rem;
+	font-weight: 600;
+	color: #774747;
+	margin-bottom: 4px;
+	display: block;
+}
+
+.popup-input {
+	width: 100%;
+	padding: 10px 14px;
+	border-radius: 12px;
+	border: 2px solid #ffd6a5;
+	background: #ffffff;
+	font-size: 0.95rem;
+	color: #5d4037;
+	font-family: 'Poppins', Arial, sans-serif;
+	outline: none;
+	box-sizing: border-box;
+	margin-bottom: 2px;
+}
+
+.popup-input:focus {
+	border-color: #ff7a5c;
+}
+
+.popup-save-btn {
+	width: 100%;
+	padding: 12px 14px;
+	background: #ffab91;
+	color: #5d4037;
+	border: none;
+	border-radius: 14px;
+	font-weight: 700;
+	font-size: 1rem;
+	cursor: pointer;
+	font-family: 'Poppins', Arial, sans-serif;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	transition: background 0.15s;
+}
+
+.popup-save-btn:hover {
+	background: #ff7043;
+	color: #fff;
+}
+
+.popup-menu-footer {
+	padding: 12px 22px 20px;
+	flex-shrink: 0;
+}
+
+.popup-menu-body {
+	padding: 8px 22px 4px;
+}
+
+/* Back button on top-left to return to homepage */
+.login-back-btn {
+	position: fixed;
+	top: 18px;
+	left: 18px;
+	z-index: 10020;
+	background: rgba(255,255,255,0.9);
+	border: 2px solid #ffd6a5;
+	color: #5d4037;
+	padding: 8px 12px;
+	border-radius: 10px;
+	font-weight: 700;
+	cursor: pointer;
+	box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+/* Remove all shadows on this page per request */
+
+.popup-menu-wrapper,
+.popup-avatar,
+.popup-save-btn,
+.login-back-btn {
+  box-shadow: none !important;
+}
+
+/* Hide any accidental decorative pseudo-elements or background blocks */
+.login-container .popup-overlay::before,
+.login-container .popup-overlay::after,
+.popup-menu-wrapper::before,
+.popup-menu-wrapper::after,
+.login-container::before,
+.login-container::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Ensure no backdrop-filter or stray background images remain */
+.login-container .popup-overlay,
+.popup-menu-wrapper,
+.login-container,
+html, body, #root {
+	/* keep login page from applying global blur removal; only scope when inside login-container */
+	backdrop-filter: none !important;
+	-webkit-backdrop-filter: none !important;
+	filter: none !important;
+	background-image: none !important;
+}
+
+
+.popup-menu-header-kasir {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 70px 22px 16px 22px;
+	flex-shrink: 0;
+	border-bottom: none;
+}
+
+.popup-menu-header-kasir span:first-child {
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	font-size: 1.1rem;
+	font-weight: 700;
+	color: #5d4037;
+	text-align: center;
+
+}
+
+.popup-menu-header-kasir span:first-child {
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	font-size: 1.3rem;
+	font-weight: 700;
+	color: #5d4037;
+	text-align: center;
+	letter-spacing: 1px;
+}
+
+.popup-menu-header-admin {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 70px 22px 16px 22px;
+	flex-shrink: 0;
+	border-bottom: none;
+}
+
+.popup-menu-header-admin span:first-child {
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	font-size: 1.1rem;
+	font-weight: 700;
+	color: #5d4037;
+	text-align: center;
+
+}
+
+.popup-menu-header-admin span:first-child {
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	font-size: 1.3rem;
+	font-weight: 700;
+	color: #5d4037;
+	text-align: center;
+	letter-spacing: 1px;
+}

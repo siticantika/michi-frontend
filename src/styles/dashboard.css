@@ -1,0 +1,1911 @@
+body{
+  overflow: auto;
+}
+  /* Header Flex untuk Navbar universal */
+.header-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  
+}
+/* ============ CHECKOUT POPUP ============ */
+.checkout-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10005;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.checkout-popup {
+  background: #ffffff;
+  color: #4a4a4a;
+  border-radius: 20px;
+  width: 420px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.25);
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Success / generic popup styling (ensure available on kasir dashboard) */
+.popup-menu-wrapper {
+  position: relative;
+  background: #fffaf5;
+  border-radius: 24px;
+  width: 460px;
+  max-width: 95vw;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  border: 3px solid #ffd6a5;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  padding: 5px 15px;
+  z-index: 10010;
+}
+
+.popup-avatar {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #ffd600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  border: 4px solid #ffffff;
+  overflow: hidden;
+}
+
+
+.checkout-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.checkout-header span:first-child {
+  font-family: 'Luckiest Guy', cursive, sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #5d4037;
+  text-align: center;
+  flex: 1;
+}
+
+.checkout-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.checkout-close {
+  position: absolute;
+  right: 0;
+  background: transparent;
+  border: none;
+  color: #ff7043;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+.checkout-title-ringkasan{
+  font-family: 'Luckiest Guy', cursive, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #5a3e2b;
+  margin-bottom: 8px;
+
+}
+
+.checkout-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.checkout-list::-webkit-scrollbar-thumb {
+  background: #ffd6a5;
+  border-radius: 4px;
+}
+
+.checkout-list {
+  overflow-y: auto;
+  max-height: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+  padding-right: 4px;
+}
+
+.checkout-item {
+  display: flex;
+  flex-direction: column;
+  background: #fffaf5;
+  border-radius: 12px;
+  border: 1px solid #ffd6a5;
+  padding: 8px 12px;
+  margin-bottom: 6px;
+}
+
+.checkout-item-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #5d4037;
+}
+
+.checkout-item-varian {
+  font-size: 0.78rem;
+  color: #999;
+  margin-left: 6px;
+}
+
+.checkout-item-price {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #ff6b3d;
+  align-self: flex-end;
+  font-family: 'Luckiest Guy', cursive, sans-serif;
+}
+
+.checkout-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-top: 1.5px solid #ffd6a5;
+  border-bottom: 1.5px solid #ffd6a5;
+  margin: 4px 0 10px;
+}
+
+.checkout-total-label {
+  font-family: 'Luckiest Guy', cursive, sans-serif;
+  font-size: 1rem;
+  color: #5d4037;
+  font-weight: 700;
+}
+
+.checkout-total-value {
+  font-family: 'Luckiest Guy', cursive, sans-serif;
+  font-size: 1rem;
+  color: #ff6b3d;
+  font-weight: 700;
+}
+
+.checkout-method-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #774747;
+  margin-bottom: 6px;
+}
+
+.checkout-method-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.checkout-method-btn {
+  display: flex;
+  align-items: center;
+  background: #fff6e0;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #5d4037;
+  cursor: pointer;
+  border: 2px solid #ffd6a5;
+  transition: background 0.15s;
+  gap: 12px;
+}
+
+.checkout-method-btn.active {
+  background: #ffe0d6;
+  border-color: #ff7a5c;
+}
+
+.radio-checked {
+  width: 20px;
+  height: 20px;
+  background: #ff7a5c;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 2px #ff7a5c;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.radio-unchecked {
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  border: 2px solid #ffd6a5;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.checkout-method-text {
+  font-family: 'Poppins', Arial, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #5d4037;
+}
+
+.checkout-qris-proof {
+  margin-bottom: 10px;
+}
+
+.checkout-qris-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #774747;
+  margin-bottom: 6px;
+}
+
+.checkout-qris-upload-box {
+  background: #fff6e0;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px dashed #ffd6a5;
+  color: #774747;
+}
+
+.checkout-qris-icon {
+  font-size: 2rem;
+  margin-bottom: 6px;
+}
+
+.checkout-qris-upload-text {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #999;
+}
+
+.checkout-qris-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.checkout-pay-btn {
+  background: #ffab91;
+  color: #5d4037;
+  border: none;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 12px 0;
+  width: 100%;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+  font-family: 'Poppins', Arial, sans-serif;
+  transition: background 0.15s;
+  margin-top: 4px;
+}
+
+.checkout-pay-btn:hover {
+  background: #ff7043;
+  color: #fff;
+}
+/* ============ GLOBAL ============ */
+.dashboard-container {
+  font-family: 'Poppins', 'Arial', sans-serif;
+  background: #fff5f7;
+  min-height: 100vh;
+}
+
+/* ============ HEADER ============ */
+.dashboard-header {
+  background: linear-gradient(90deg, #ff7a5c, #ffd166);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 72px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Strong owner-header overrides to exactly match kasir header visuals */
+.laporan-header .laporan-logo,
+.pemasukan-header .pemasukan-logo,
+.pengeluaran-header .pengeluaran-logo {
+  width: 44px !important;
+  height: 44px !important;
+  margin-right: 14px !important;
+  border-radius: 50% !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10) !important;
+  object-fit: cover !important;
+}
+
+.laporan-header .logo-title,
+.pemasukan-header .logo-title,
+.pengeluaran-header .logo-title,
+.laporan-header .laporan-title,
+.pemasukan-header .pemasukan-title,
+.pengeluaran-header .pengeluaran-title {
+  font-family: 'Luckiest Guy', cursive, sans-serif !important;
+  color: #fff !important;
+  font-size: 1.25rem !important;
+  letter-spacing: 0.5px !important;
+  font-weight: 400 !important;
+  margin-right: 14px !important;
+}
+
+/* Nav link visuals for owner pages — match kasir nav (text links, no boxed background) */
+.laporan-header .laporan-nav .laporan-nav-link,
+.pemasukan-header .pemasukan-nav .pemilik-nav-link,
+.pengeluaran-header .pengeluaran-nav .pengeluaran-nav-link {
+  color: #8f2100 !important;
+  background: none !important;
+  border: none !important;
+  text-decoration: none !important;
+  font-family: 'Luckiest Guy', cursive, sans-serif !important;
+  font-size: 0.95rem !important;
+  font-weight: 400 !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+}
+
+.laporan-header .laporan-nav .laporan-nav-link.active,
+.laporan-header .laporan-nav .laporan-nav-link:hover,
+.pemasukan-header .pemasukan-nav .pemilik-nav-link.active,
+.pemasukan-header .pemasukan-nav .pemilik-nav-link:hover,
+.pengeluaran-header .pengeluaran-nav .pengeluaran-nav-link.active,
+.pengeluaran-header .pengeluaran-nav .pengeluaran-nav-link:hover {
+  color: #ff7043 !important;
+}
+
+/* Strong enforcement: make owner pages match kasir exactly */
+/* Page background */
+.laporan-owner-bg,
+.pemasukan-owner-bg,
+.pengeluaran-owner-bg {
+  background: #fff5f7 !important;
+  min-height: 100vh !important;
+}
+
+/* Header visuals */
+.laporan-header,
+.pemasukan-header,
+.pengeluaran-header {
+  background: linear-gradient(90deg, #ff7a5c, #ffd166) !important;
+  color: #fff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0 24px !important;
+  height: 72px !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+}
+
+/* Logo sizing and title */
+.laporan-header .laporan-logo,
+.pemasukan-header .pemasukan-logo,
+.pengeluaran-header .pengeluaran-logo,
+.laporan-header .logo-img,
+.pemasukan-header .logo-img,
+.pengeluaran-header .logo-img {
+  width: 44px !important;
+  height: 44px !important;
+  margin-right: 14px !important;
+  border-radius: 50% !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10) !important;
+  object-fit: cover !important;
+}
+
+.laporan-header .logo-title,
+.pemasukan-header .logo-title,
+.pengeluaran-header .logo-title,
+.laporan-header .laporan-title,
+.pemasukan-header .pemasukan-title,
+.pengeluaran-header .pengeluaran-title {
+  font-family: 'Luckiest Guy', cursive, sans-serif !important;
+  color: #fff !important;
+  font-size: 1.25rem !important;
+  letter-spacing: 0.5px !important;
+  font-weight: 400 !important;
+  margin-right: 14px !important;
+}
+
+/* Nav buttons/links — remove boxed backgrounds, match kasir text style */
+.laporan-header .laporan-nav button,
+.laporan-header .laporan-nav .laporan-nav-link,
+.pemasukan-header .pemasukan-nav button,
+.pemasukan-header .pemasukan-nav .pemilik-nav-link,
+.pengeluaran-header .pengeluaran-nav button,
+.pengeluaran-header .pengeluaran-nav .pengeluaran-nav-link {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 8px !important;
+  color: #8f2100 !important;
+  font-family: 'Luckiest Guy', cursive, sans-serif !important;
+  font-size: 0.95rem !important;
+  font-weight: 400 !important;
+  cursor: pointer !important;
+}
+
+.laporan-header .laporan-nav .laporan-nav-link.active,
+.laporan-header .laporan-nav .laporan-nav-link:hover,
+.pemasukan-header .pemasukan-nav .pemilik-nav-link.active,
+.pemasukan-header .pemasukan-nav .pemilik-nav-link:hover,
+.pengeluaran-header .pengeluaran-nav .pengeluaran-nav-link.active,
+.pengeluaran-header .pengeluaran-nav .pengeluaran-nav-link:hover {
+  color: #ff7043 !important;
+}
+
+/* Ensure logout button retains white text if originally styled as such */
+.laporan-header .laporan-nav .laporan-nav-link.logout,
+.pemasukan-header .pemasukan-nav .pemilik-nav-link.logout,
+.pengeluaran-header .pengeluaran-nav .pengeluaran-nav-link.logout {
+  color: #fff !important;
+}
+
+/* Search in header (centered) */
+.header-search {
+  flex: 1;
+  display: flex;
+  justify-content: center; /* keep original desktop-centered search */
+  align-items: center;
+  padding: 0 24px;
+}
+
+/* Place hamburger to the right of the search box on dashboard header */
+/* Hide hamburger on full desktop; show only on narrower (split) widths */
+.dashboard-header .nav-toggle {
+  display: none;
+}
+
+@media (max-width: 1400px) {
+  .dashboard-header .nav-toggle {
+    display: inline-block; /* show when window narrowed / split */
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    color: #8f2100;
+    cursor: pointer;
+    margin-left: 8px;
+    align-self: center;
+    padding: 6px 8px;
+  }
+}
+.search-box {
+  position: relative; 
+  width: 320px; 
+  max-width: 100%; 
+}
+/* ensure search input can shrink inside header */
+.search-box {
+  position: relative; 
+  width: 320px; 
+  max-width: 100%; 
+}
+
+@media (max-width: 1400px) {
+  /* on narrowed/split screens, align search left and keep hamburger to the right */
+  .header-search {
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 0 12px;
+    min-width: 0;
+  }
+  .header-search .search-box,
+  .header-search .search-input,
+  .header-search .search-clear {
+    min-width: 0;
+  }
+
+  /* Force header child ordering only on narrower screens */
+  .dashboard-header {
+    display: flex;
+    align-items: center;
+  }
+  .dashboard-header > .logo-section { order: 1; }
+  .dashboard-header > .header-search { order: 2; flex: 1; min-width: 0; }
+  .dashboard-header > .nav-toggle { order: 3; margin-left: 8px; }
+  .dashboard-header > .dashboard-nav { order: 4; }
+}
+
+/* Make search-box width match TambahMenu on split/narrow screens */
+@media (max-width: 1400px) {
+  .dashboard-header .header-search .search-box {
+    width: 480px; /* same visual width as Tambah Menu */
+    max-width: calc(100% - 120px);
+    min-width: 0;
+  }
+}
+.header-search .search-input {
+  width: 100%;
+  height: 38px;
+  background: #fff7f0;
+  border-radius: 24px;
+  padding: 6px 36px;
+  border: 3px solid #ffd6a5;
+  outline: none;
+  font-size: 0.9rem;
+  color: #333;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+.header-search 
+
+.search-input::placeholder { 
+  color: #999; 
+  font-size: 0.9rem
+}
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+   color: #ff7a5c;
+  pointer-events: none;
+}
+.search-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 0.95rem;
+  color: #ff7a5c;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 8px;
+}
+.search-clear:hover { background: rgba(0,0,0,0.04); }
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  margin-right: 32px;
+}
+.dashboard-header .logo-section .logo-img,
+.logo-section .logo-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #ffd600;
+  object-fit: cover;
+  margin-right: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  display: inline-block;
+  vertical-align: middle;
+}
+.dashboard-header .logo-section .logo-title,
+.logo-section .logo-title {
+  font-family: 'Luckiest Guy', cursive, sans-serif;
+  color: #fff;
+  font-size: 1.25rem; /* change this value to reduce/increase title size */
+  letter-spacing: 0.5px;
+  font-weight: 400;
+  margin-right: 24px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.dashboard-nav {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  font-family: 'Luckiest Guy', cursive, sans-serif;
+  font-weight: 400;
+  margin-right: 32px;
+}
+
+/* Toggle (hamburger) for mobile */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: #fff;
+  cursor: pointer;
+  padding: 6px 8px;
+}
+
+/* Mobile expanded nav (dropdown) */
+.dashboard-nav.open {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+/* ensure header-scoped nav open overrides any hide rules */
+.dashboard-header .dashboard-nav.open { display: flex !important; }
+.dashboard-header .dashboard-nav .dashboard-nav-link,
+.dashboard-nav .dashboard-nav-link {
+  color: #8f2100;
+  background: none;
+  border: none;
+  text-decoration: none;
+  font-family: 'Luckiest Guy', cursive, sans-serif;
+  font-size: 0.95rem; /* change this value to reduce/increase nav item size */
+  font-weight: 45000;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.dashboard-nav-link.active,
+
+.dashboard-nav-link:hover {
+  color: #ff7043 !important;
+}
+.dashboard-nav-link.logout {
+  color: #fff;
+  font-weight: 400;
+  margin-left: 32px;
+  display: flex;
+  align-items: center;
+  font-size: 1.15rem;
+}
+.logout-icon {
+  margin-left: 8px;
+  font-size: 1.4rem;
+  font-family: 'Luckiest Guy', cursive, sans-serif;
+}
+
+/* Ensure pemilik nav buttons match kasir dashboard nav colors and hover */
+.dashboard-header .pemilik-nav-link,
+.dashboard-header .laporan-nav .pemilik-nav-link,
+.dashboard-header .pemasukan-nav .pemilik-nav-link,
+.dashboard-header .pengeluaran-nav .pemilik-nav-link,
+.dashboard-header .dashboard-nav .pemilik-nav-link {
+  color: #8f2100 !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 8px !important;
+  font-family: 'Luckiest Guy', cursive, sans-serif !important;
+  font-size: 0.95rem !important;
+  font-weight: 400 !important;
+  cursor: pointer !important;
+}
+
+.dashboard-header .pemilik-nav-link.active,
+.dashboard-header .pemilik-nav-link:hover,
+.dashboard-header .laporan-nav .pemilik-nav-link.active,
+.dashboard-header .laporan-nav .pemilik-nav-link:hover {
+  color: #ff7043 !important;
+}
+
+.dashboard-header .pemilik-nav-link.logout {
+  color: #fff !important;
+}
+
+/* Final safety overrides: ensure every pemilik nav button (all pages) matches kasir colors */
+.dashboard-header button.pemilik-nav-link,
+.dashboard-header .pemilik-nav-link,
+.dashboard-header .laporan-nav .pemilik-nav-link,
+.dashboard-header .pemasukan-nav .pemilik-nav-link,
+.dashboard-header .pengeluaran-nav .pemilik-nav-link,
+.dashboard-header .dashboard-nav .pemilik-nav-link {
+  color: #8f2100 !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 8px !important;
+  font-family: 'Luckiest Guy', cursive, sans-serif !important;
+  font-size: 0.95rem !important;
+  font-weight: 400 !important;
+  cursor: pointer !important;
+}
+
+.dashboard-header button.pemilik-nav-link.active,
+.dashboard-header .pemilik-nav-link.active,
+.dashboard-header button.pemilik-nav-link:hover,
+.dashboard-header .pemilik-nav-link:hover,
+.dashboard-header .laporan-nav .pemilik-nav-link.active,
+.dashboard-header .laporan-nav .pemilik-nav-link:hover,
+.dashboard-header .pemasukan-nav .pemilik-nav-link.active,
+.dashboard-header .pemasukan-nav .pemilik-nav-link:hover,
+.dashboard-header .pengeluaran-nav .pemilik-nav-link.active,
+.dashboard-header .pengeluaran-nav .pemilik-nav-link:hover {
+  color: #ff7043 !important;
+}
+
+/* Logout remains white */
+.dashboard-header .pemilik-nav-link.logout {
+  color: #fff !important;
+}
+
+/* ============ MAIN ============ */
+.dashboard-main {
+  display: flex;
+  flex-direction: row;
+  padding: 20px 20px 30px 20px;
+  margin: 0;
+  min-height: calc(100vh - 1200px);
+  gap: 20px;
+}
+
+/* ============ MENU AREA (LEFT) ============ */
+.menu-section {
+  flex: 2;
+  padding: 3px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  height: calc(100vh - 140px); /* tinggi sama dengan keranjang */
+  overflow: hidden; /* supaya parent tidak scroll */
+}
+/* CART EMPTY (keranjang kosong) */
+.cart-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;     /* tengah horizontal */
+  justify-content: center; /* tengah vertical */
+  height: 70%;
+  text-align: center;
+  padding: 20px;
+}
+
+.cart-empty-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #a80000;
+  margin-bottom:  6px;
+}
+
+.cart-empty-desc {
+  font-size: 0.9rem;
+  color: #777;
+}
+
+.menu-type-btns {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 1px;
+  margin-left: 5px; /* geser lebih ke kiri */
+  margin-top: 0;   /* jarak dari atas */
+  flex-shrink: 0; /* tidak ikut scroll */
+}
+.menu-type-btns button {
+  background: #ffe0d6;
+  color: #ff7a5c;
+  border: none;
+  border-radius: 28px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 10px 26px;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.08s;
+}
+.menu-type-btns button:hover { transform: translateY(-2px); }
+.menu-type-btns button.active {
+   background: #ff7a5c;
+  color: #fff;
+}
+
+.menu-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 35px;
+  margin-top: 20px;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  padding: 10px;
+
+  overflow-y: auto;   /* scroll hanya di sini */
+  max-height: 100%;   /* ikut tinggi menu-section */
+}
+
+/* ============ MENU CARD ============ */
+.menu-card {
+  background: #fffaf5;
+  color: #4a4a4a;
+  border-radius: 40px;
+  width: 195px;
+  min-height: 180px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 10px 8px 8px 8px;
+	box-shadow: 0 3px 12px rgba(0,0,0,0.10);
+	position: relative;
+  border: 10px solid #ffe0d6;
+}
+
+.menu-card-img {
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+.menu-card-img img {
+  width: 20px;
+  height: 20px;
+  border-radius: 12px;
+  background: #fff;
+  object-fit: cover;
+}
+.menu-card-label {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: linear-gradient(180deg, #ff9a6b 0%, #ffd6a5 100%);
+  color: #fff;
+  font-family: 'Luckiest Guy', cursive, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: 0 12px 0 12px;
+  padding: 6px 14px;
+  z-index: 2;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+}
+
+.menu-card-title {
+  font-size: 0.78rem;
+  line-height: 1.2;
+  font-family: 'Luckiest Guy', cursive, sans-serif;
+  font-weight: 700;
+  margin-bottom: 1px;
+  text-align: left;
+  padding-left: 6px;
+}
+.menu-card-desc {
+  font-size: 0.6rem;
+  font-family: 'Poppins', Arial, sans-serif;
+  padding-left: 6px;
+  line-height: 1.1;
+	margin-bottom: 8px;
+}
+
+.menu-card-price {
+    font-size: 0.85rem;
+	  font-weight: 600;
+	  margin-top: auto;
+    font-family: 'Luckiest Guy', cursive, sans-serif;
+    margin-bottom: 4px;
+    padding-left: 6px;
+}
+
+.menu-card-add {
+	background: #ff8a65;
+	color: #fff;
+	border: none;
+	border-radius: 14px;
+	font-size: 0.72rem;
+	padding: 4px 0;
+	font-family: 'Luckiest Guy', cursive, sans-serif;
+	font-weight: 700;
+	width: calc(100% - 12px);
+	cursor: pointer;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+	transition: background 0.15s;
+	align-self: center;
+	margin-top: auto; /* tombol turun ke bawah card */
+}
+
+
+.menu-card-add:hover {
+  background: #e65100;
+}
+
+/* ============ CART (RIGHT) ============ */
+.cart-section {
+  flex: 1;
+  background: #fff;
+  border-radius: 14px;
+
+  padding: 15px;
+
+  min-width: 320px;
+  max-width: 320px;
+
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+  position: relative;
+  height: calc(100vh - 140px);
+
+  display: flex;            
+  flex-direction: column;  
+  overflow: hidden;        
+}
+
+.cart-header {
+  background: #ff7a5c;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+/* CART LIST */
+.cart-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;  /* dikecilkan dari 10px */
+  align-items: center;
+  flex: 1; /* isi sisa ruang, sehingga checkout di bawah tidak menutup */
+  overflow-y: auto;
+  padding: 610x 0px ; /* padding-bottom supaya tidak tertutup checkout */
+}
+
+/* === Copied dashboard-scoped overrides (moved from index.css) === */
+/* Grid layout: force five columns for kasir menu area on wide screens */
+.dashboard-main .menu-cards {
+  display: grid;
+  grid-template-columns: repeat(5, 195px); /* fixed column width to preserve card size */
+  gap: 36px; /* match original spacing */
+  justify-content: flex-start;
+  align-items: start;
+  padding: 10px 18px;
+}
+
+.dashboard-main .menu-card {
+  box-sizing: content-box !important; /* match original sizing where border adds to visual width */
+  width: 195px !important; /* fixed visual card width */
+  min-height: 180px;
+  padding: 10px 8px !important;
+}
+
+/* Make cart align to top and slightly taller but not overflow the page */
+.dashboard-main .cart-section {
+  align-self: stretch;
+
+  height: calc(100vh - 120px);
+  min-height: 520px;
+  padding-bottom: 24px;
+}
+
+/* End moved overrides */
+
+/* Responsive adjustments: keep desktop (five fixed columns) as-is, adapt for tablet/mobile */
+@media (max-width: 1024px) {
+  .dashboard-main .menu-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* tablet: 3 columns */
+    gap: 22px;
+    padding: 10px 14px;
+    justify-items: center;
+    align-items: start;
+  }
+
+  .dashboard-main .menu-card {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 220px;
+    padding: 10px 10px !important;
+    border-radius: 28px;
+  }
+}
+
+/* Force 2-column layout on small phones/tablets (user request) */
+@media (max-width: 768px) {
+  .dashboard-main .menu-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    padding: 8px 10px;
+    justify-items: stretch;
+    align-items: start;
+  }
+
+  .dashboard-main .menu-card {
+    width: 100% !important;
+    max-width: none;
+    box-sizing: border-box !important;
+    border-radius: 20px;
+    min-height: 140px;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-main .menu-cards {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 14px;
+    padding: 8px 10px;
+  }
+
+  .dashboard-main .menu-card {
+    max-width: 200px;
+    min-height: 140px;
+    padding: 10px !important;
+    border-radius: 22px;
+  }
+
+  .menu-card-img img {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* Tablet: explicit 3-column layout (768px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .dashboard-main .menu-cards {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 10px 14px;
+    justify-items: stretch;
+  }
+
+  .dashboard-main .menu-card {
+    width: 100% !important;
+    max-width: none;
+  }
+}
+
+/* Mobile: 2-column cards, cart moves below menu, enable page scroll */
+@media (max-width: 768px) {
+  body { overflow: auto; }
+
+  .dashboard-main {
+    flex-direction: column;
+    padding: 12px 12px 30px 12px;
+    gap: 12px;
+  }
+
+  .menu-section {
+    order: 1;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .cart-section {
+    order: 2;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    height: auto;
+    align-self: stretch;
+  }
+
+  .dashboard-main .menu-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* phone: 2 columns */
+    gap: 12px;
+    padding: 6px 8px;
+    justify-items: stretch;
+  }
+
+  .dashboard-main .menu-card {
+    width: 100% !important;
+    max-width: none;
+    box-sizing: border-box !important;
+    border-radius: 18px;
+    min-height: 140px;
+  }
+
+  /* ensure header search and hamburger fit on small screens */
+  .dashboard-header { padding: 0 12px; }
+  .header-search { padding: 0 8px; }
+  .dashboard-header .header-search .search-box { width: calc(100% - 64px); max-width: none; }
+}
+
+/* ITEM (style like pasted image: red rounded card) */
+.cart-item {
+  background: #ffffff;
+  color: #4a4a4a;
+  border-radius: 15px;
+  padding: 10px 10px;
+  width: 90%;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: stretch;
+  position: relative;
+  color: #fff;
+  border: 1px solid #ffd6a5;
+  margin: 0 auto ;   
+}
+
+/* top row: emoji + title */
+.cart-item-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.cart-item .cart-item-emoji {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  flex: 0 0 44px;
+  overflow: hidden;
+  box-shadow: none; 
+  padding: 0;  
+}
+.cart-item .cart-item-emoji img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: transparent;
+}
+.cart-item-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333 !important;
+  font-family: 'Luckiest Guy', cursive, sans-serif;
+}
+.cart-item-varian {
+  font-size: 0.70rem;
+  color: #777 !important;
+  margin-left: 4px;
+}
+
+/* small divider */
+.cart-item-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 2px;
+  margin: 6px 0;
+}
+
+.cart-item-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  white-space: nowrap;
+  gap: 6px
+}
+.cart-item-qty {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #555 !important;
+}
+
+.cart-item-price {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #ff6b3d !important;
+  font-family: 'Luckiest Guy', cursive, sans-serif;
+  white-space: nowrap;
+}
+
+/* trash button styled as small pink rounded square at top-right */
+.cart-item-remove {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  background: #ff7a5c;
+  color: #fff;
+  border: none;
+  width: 30px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.8rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+/* CHECKOUT AREA (sticky di bawah) */
+.cart-checkout {
+  left: 12px;
+  right: 12px;
+   background: linear-gradient(90deg, #ff7a5c, #ffd166);
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 -3px 8px rgba(0,0,0,0.08);
+  margin-top: auto;  
+}
+
+.cart-subtotal,
+.cart-total {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 6px;
+  font-size: 0.95rem;
+  color: #fff;
+}
+.cart-total {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+.cart-checkout-btn {
+   background: #ffffff;
+  color: #ff7a5c;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 7px 0;
+  width: 100%;
+  margin-top: 10px;
+  display: block;
+  cursor: pointer;
+}
+
+/* POPUP (add menu) - bila diperlukan */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10005;
+  /* blur background content behind the overlay */
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.popup-menu {
+  width: 420px;
+  max-width: 95vw;
+  background: #ffffff;
+  color: #4a4a4a;
+  border-radius: 20px;
+  padding: 20px 22px;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.25);
+}
+
+/* Popup header: title centered, close button at left, inline alignment */
+.popup-header {
+  position: relative;
+  height: 44px; /* reserve vertical space */
+  display: block;
+  margin-bottom: 12px;
+}
+.popup-title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Luckiest Guy', cursive, sans-serif;
+  font-size: 0.95rem; /* small enough to stay one line */
+  font-weight: 700;
+  color: #5d4037;
+  white-space: nowrap;
+  text-align: center;
+  pointer-events: none;
+}
+.popup-close {
+  position: absolute;
+  right: 12px; /* place close button on the right */
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #ff7043;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 8px;
+}
+
+/* Popup form controls */
+.popup-form { 
+  display:flex; 
+  flex-direction:column; 
+  gap:12px; 
+}
+
+.popup-label { 
+  color:#774747; 
+  font-weight:600; 
+  font-size:0.rem; 
+}
+
+.popup-select {
+  width:100%; 
+  padding:8px 10px; 
+  border-radius:12px; 
+  background: #ffffff;
+  border: 2px solid #ffd6a5;
+  color: #5d4037; 
+  font-size:1rem; outline:none;
+}
+
+.popup-qty-row { display:flex; align-items:center; gap:12px; }
+.popup-qty-btn {
+  width:30px;
+   height:30px;
+   border-radius:8px; 
+   border:none; 
+   background:#e3cca8;
+   color:#a80000; 
+   font-size:1.1rem; 
+   font-weight:700; 
+   cursor:pointer;
+}
+.popup-qty-value {
+  min-width:24px; 
+  text-align:center; 
+  color:#9c8282; 
+  font-weight:700; 
+}
+
+.popup-save-btn {
+  width:100%; 
+  padding:12px 14px; 
+  background: #ffab91;
+  color: #5d4037;
+  border:none;
+  border-radius:14px; 
+  font-weight:700; 
+  cursor:pointer; 
+  box-shadow:0 6px 18px rgba(0,0,0,0.12);
+}
+
+.popup-save-btn-oke {
+  width:20%; 
+  padding:12px 14px; 
+  background: #ffab91;
+  color: #5d4037;
+  border:none;
+  border-radius:14px; 
+  font-weight:700; 
+  cursor:pointer; 
+  box-shadow:0 6px 18px rgba(0,0,0,0.12);
+}
+
+.popup-save-btn:hover {
+  background: #ff7043;
+  color: #fff;
+}
+
+/* Responsive kecil */
+@media (max-width: 900px) {
+  .dashboard-main { flex-direction: column; padding: 12px; min-height: auto; }
+  .menu-section { width: 100%; order: 1; }
+  .cart-section { width: 100%; order: 2; height: auto; position: relative; }
+  .cart-checkout { position: relative; margin-top: 12px; bottom: auto; left: auto; right: auto; }
+  .menu-cards { justify-content: center; }
+}
+
+/* ============ RESPONSIVE ============ */
+
+/* TABLET (768px - 1024px) */
+@media (max-width: 1024px) {
+  .dashboard-main {
+    flex-direction: row;
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .menu-section {
+    flex: 1.5;
+    height: calc(100vh - 120px);
+  }
+
+  .cart-section {
+    min-width: 260px;
+    max-width: 260px;
+    height: calc(100vh - 120px);
+  }
+
+  .menu-cards {
+    gap: 16px;
+  }
+
+  .menu-card {
+    width: 195px !important;
+    min-height: 180px;
+  }
+
+  .dashboard-header {
+    padding: 0 16px;
+    height: 64px;
+  }
+
+  .logo-title {
+    font-size: 1rem !important;
+  }
+
+  .header-search {
+    padding: 0 12px;
+  }
+
+  .search-box {
+    width: 220px;
+  }
+}
+
+/* MOBILE BESAR (480px - 768px) */
+@media (max-width: 768px) {
+  .dashboard-header {
+    height: auto;
+    padding: 10px 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .logo-section {
+    margin-right: 0;
+  }
+
+  .logo-img {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .logo-title {
+    font-size: 0.9rem !important;
+  }
+
+  .header-search {
+    order: 3;
+    width: 100%;
+    padding: 0;
+  }
+
+  .search-box {
+    width: 100%;
+  }
+
+  .dashboard-main {
+    flex-direction: column;
+    padding: 12px;
+    gap: 12px;
+    height: auto;
+    overflow: auto;
+  }
+
+  .menu-section {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    order: 1;
+  }
+
+  .menu-cards {
+    max-height: none;
+    overflow: visible;
+    gap: 12px;
+    padding: 8px;
+  }
+
+  .menu-card {
+    width: 195px !important;
+    min-height: 180px;
+  }
+
+  .menu-type-btns {
+    margin-bottom: 8px;
+  }
+
+  .menu-type-btns button {
+    padding: 8px 18px;
+    font-size: 0.85rem;
+  }
+
+  .cart-section {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: 400px;
+    order: 2;
+  }
+
+  /* Popup menu */
+  .popup-menu {
+    width: 95vw;
+    max-width: 95vw;
+    padding: 16px;
+  }
+
+  /* Popup checkout */
+  .checkout-popup {
+    width: 95vw;
+    max-width: 95vw;
+  }
+}
+
+/* MOBILE KECIL (max 480px) */
+@media (max-width: 480px) {
+  .dashboard-header {
+    padding: 8px 12px;
+  }
+
+  .logo-title {
+    font-size: 0.8rem !important;
+  }
+
+  .dashboard-nav {
+    gap: 16px;
+    margin-right: 0;
+  }
+
+  .dashboard-nav-link {
+    font-size: 0.78rem !important;
+  }
+
+  .dashboard-main {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .menu-card {
+    width: 195px !important;
+    min-height: 180px;
+  }
+
+  .menu-card-title {
+    font-size: 0.7rem;
+  }
+
+  .menu-card-price {
+    font-size: 0.75rem;
+  }
+
+  .menu-card-add {
+    font-size: 0.65rem;
+    padding: 3px 0;
+  }
+
+  .cart-header {
+    font-size: 0.88rem;
+    padding: 8px;
+  }
+
+  .cart-item {
+    padding: 8px;
+  }
+
+  .cart-item-title {
+    font-size: 0.82rem;
+  }
+
+  .cart-item-price {
+    font-size: 0.82rem;
+  }
+
+  .cart-subtotal,
+  .cart-total {
+    font-size: 0.85rem;
+  }
+
+  .cart-checkout-btn {
+    font-size: 0.82rem;
+    padding: 6px 0;
+  }
+
+  .checkout-popup {
+    width: 98vw;
+    max-width: 98vw;
+    padding: 14px 14px;
+  }
+
+  .checkout-header span:first-child {
+    font-size: 1rem;
+  }
+
+  .checkout-pay-btn {
+    font-size: 0.9rem;
+    padding: 10px 0;
+  }
+
+  .popup-menu {
+    width: 98vw;
+    max-width: 98vw;
+    padding: 14px;
+  }
+
+  /* Navbar links di mobile */
+  .dashboard-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+/* Show a hamburger and convert nav to dropdown on smaller screens */
+@media (max-width: 768px) {
+  .nav-toggle { display: inline-block; color: #8f2100; font-size: 1.3rem; }
+
+  /* Slide-in left drawer: keep DOM present and use transform for animation */
+  .dashboard-nav {
+    display: flex;
+    position: fixed;
+    left: 0;
+    top: 64px;
+    bottom: 0;
+    width: 260px; /* set drawer width between 250-280px */
+    max-width: 80%;
+    background: #fffaf5;
+    padding: 12px 14px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+    z-index: 10999;
+    flex-direction: column;
+    gap: 8px;
+    transform: translateX(-110%); /* hidden offscreen */
+    transition: transform 320ms cubic-bezier(.2,.9,.3,1), box-shadow 220ms ease;
+    overflow: auto;
+    will-change: transform;
+  }
+
+  .dashboard-nav.open {
+    transform: translateX(0);
+  }
+
+  .dashboard-nav .dashboard-nav-link,
+  .dashboard-nav .pemilik-nav-link {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    color: #8f2100;
+    border-radius: 6px;
+    background: transparent;
+    margin-bottom: 6px; /* spacing between items */
+  }
+
+  /* place logout button visually separated at the bottom */
+  .dashboard-nav .dashboard-nav-link.logout {
+    margin-left: 0;
+    background: #ff7a5c;
+    color: #fff;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-top: auto; /* push to bottom */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  }
+
+  /* backdrop behind drawer to close when clicking outside */
+  .nav-backdrop {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 64px;
+    bottom: 0;
+    background: rgba(0,0,0,0.42); /* stronger transparent overlay */
+    z-index: 10990;
+    opacity: 0;
+    transition: opacity 240ms ease;
+  }
+
+  /* when drawer open, fade in backdrop */
+  .dashboard-nav.open ~ .nav-backdrop,
+  .nav-backdrop.open {
+    opacity: 1;
+  }
+}
+/* Ensure at very small widths the toggle is in header and nav overlays full width */
+@media (max-width: 480px) {
+  .nav-toggle { font-size: 1.2rem; color: #8f2100; margin-left: 8px; }
+  .dashboard-nav.open {
+    right: 8px;
+    left: 8px;
+    top: 64px;
+    min-width: auto;
+    padding: 10px;
+  }
+}
+
+/* MOBILE SANGAT KECIL (max 360px) */
+@media (max-width: 360px) {
+  .menu-card {
+    width: 195px !important;
+    min-height: 180px !important;
+  }
+
+  .logo-title {
+    display: none !important;
+  }
+
+  .dashboard-nav-link {
+    font-size: 0.72rem !important;
+  }
+}
+
+/* Small overrides to restore natural page scrolling and prevent horizontal shift on small screens */
+@media (max-width: 1024px) {
+  /* allow page to scroll if content taller than viewport */
+  body { overflow: auto !important; }
+  /* make menu cards responsive instead of fixed 5-column grid */
+  .dashboard-main .menu-cards {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
+    justify-content: center;
+  }
+  .dashboard-main { min-height: auto !important; }
+}
+
+@media (max-width: 768px) {
+  body { overflow: auto !important; }
+  .dashboard-main .menu-cards {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)) !important;
+    gap: 16px !important;
+    padding: 8px !important;
+  }
+  /* keep menu-section fixed-height and make its internal list scrollable */
+  .menu-section {
+    overflow: hidden !important;
+    height: calc(100vh - 140px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .menu-section .menu-cards {
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+}
+
+@media (max-width: 480px) {
+  body { overflow: auto !important; }
+  .dashboard-main .menu-cards {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)) !important;
+    gap: 12px !important;
+  }
+  .menu-section {
+    overflow: hidden !important;
+    height: calc(100vh - 140px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .menu-section .menu-cards {
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+}
+
+/* Explicit fixed-column breakpoints (do not change card visuals). 
+   Desktop >=1400px: 5 columns
+   Laptop 1024-1399px: 4 columns
+   Tablet 768-1023px: 3 columns
+   Mobile <=767px: 2 columns */
+@media (min-width: 1400px) {
+  .dashboard-main .menu-cards {
+    display: grid !important;
+    grid-template-columns: repeat(5, 195px) !important;
+    gap: 36px !important;
+    justify-content: flex-start !important;
+  }
+  /* Restore original desktop card visual size when full-width */
+  .dashboard-main .menu-card {
+    width: 155px !important;
+    max-width: 155px !important;
+    min-height: 150px !important;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1399px) {
+  .dashboard-main .menu-cards {
+    display: grid !important;
+    grid-template-columns: repeat(4, 195px) !important;
+    gap: 36px !important;
+    justify-content: center !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .dashboard-main .menu-cards {
+    display: grid !important;
+    grid-template-columns: repeat(3, 195px) !important;
+    gap: 28px !important;
+    justify-content: center !important;
+  }
+}
+
+@media (max-width: 775px) {
+  .dashboard-main .menu-cards {
+    display: grid !important;
+    grid-template-columns: repeat(3, 195px) !important;
+    gap: 30px !important;
+    justify-content: center !important;
+  }
+}
+
+/* (Removed conflicting fixed-size rules to avoid media-query collisions) */
+
+/* center grid on narrower viewports so columns look balanced */
+@media (max-width: 1400px) {
+  .dashboard-main .menu-cards { justify-content: center !important; }
+}
+
+/* Force desktop card visuals on smaller devices: only columns change, not card size/proportions */
+@media (max-width: 1399px) {
+  .dashboard-main .menu-card {
+    width: 195px !important;
+    max-width: 195px !important;
+    min-height: 180px !important;
+    border-radius: 40px !important;
+    padding: 10px 8px !important;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.10) !important;
+  }
+  .menu-card-title { font-size: 0.78rem !important; text-align: left !important; }
+  .menu-card-desc { font-size: 0.6rem !important; text-align: left !important; padding-left: 6px !important; }
+  .menu-card-price { font-size: 0.85rem !important; }
+  .menu-card-add { font-size: 0.72rem !important; padding: 4px 0 !important; width: calc(100% - 12px) !important; }
+}
+
+@media (max-width: 1023px) {
+  .dashboard-main .menu-card {
+    width: 195px !important;
+    max-width: 195px !important;
+    min-height: 180px !important;
+    border-radius: 40px !important;
+    padding: 10px 8px !important;
+  }
+  .menu-card-title { font-size: 0.78rem !important; }
+  .menu-card-desc { font-size: 0.6rem !important; }
+  .menu-card-price { font-size: 0.85rem !important; }
+  .menu-card-add { font-size: 0.72rem !important; }
+}
+
+@media (max-width: 767px) {
+  .dashboard-main .menu-card {
+    width: 195px !important;
+    max-width: 195px !important;
+    min-height: 180px !important;
+    border-radius: 40px !important;
+    padding: 10px 8px !important;
+  }
+  .menu-card-title { font-size: 0.78rem !important; }
+  .menu-card-desc { font-size: 0.6rem !important; }
+  .menu-card-price { font-size: 0.85rem !important; }
+  .menu-card-add { font-size: 0.72rem !important; }
+}
+
+/* Highest-priority restore: ensure full desktop (>=1400px viewport) shows original card visuals */
+@media (min-width: 1400px) {
+  .dashboard-main .menu-card {
+    width: 155px !important;
+    max-width: 155px !important;
+    min-height: 150px !important;
+    padding: 10px 8px !important;
+    border-radius: 40px !important;
+  }
+  .dashboard-main .menu-cards {
+    grid-template-columns: repeat(5, 195px) !important;
+    gap: 36px !important;
+    justify-content: flex-start !important;
+  }
+
+  
+
+}
+

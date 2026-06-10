@@ -1,0 +1,37 @@
+.grafik-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 6px 18px rgba(255,122,92,0.06);
+  /* match summary card container and padding so left/right edges align */
+  padding: 30px 18px; /* match .laporan-card padding */
+  margin: 25px auto 20px auto;
+  width: 100%;
+  max-width: 1500px;
+  border: 2px solid #ffd6e0;
+  box-sizing: border-box;
+}
+.grafik-header h3 {
+  margin: 0 0 8px 0;
+  color: #6d2c00;
+  font-size: 1.05rem;
+}
+.grafik-body {
+  background: linear-gradient(180deg, #fff, #fff);
+  padding: 6px 0 4px 0; /* no horizontal padding so inner svg aligns with card content */
+}
+.grafik-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+.grafik-inner {
+  height: 280px; /* match ResponsiveContainer height */
+}
+.grafik-loading { text-align: center; padding: 8px 0; color: #999 }
+
+@media (max-width: 900px) {
+  .grafik-card { height: auto; }
+}
+
+/* allow main content area to scroll to bottom if needed */
+.laporan-main { overflow: visible; }
+.laporan-owner-bg { overflow-y: auto; }

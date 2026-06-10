@@ -1,0 +1,35 @@
+import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+
+function Navbar() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const navs = [
+    { label: 'Dashboard', path: '/kasir/dashboard' },
+    { label: 'Transaksi', path: '/kasir/transaksi' },
+    { label: 'Pengeluaran', path: '/kasir/pengeluaran' },
+    { label: 'Menu', path: '/kasir/tambahmenu' },
+  ];
+
+  return (
+    <nav className="dashboard-nav">
+      {navs.map(nav => {
+        const isActive = location.pathname === nav.path;
+        return (
+          <button
+            key={nav.path}
+            className={"dashboard-nav-link" + (isActive ? ' active' : '')}
+            onClick={() => navigate(nav.path)}
+            type="button"
+          >
+            {nav.label}
+          </button>
+        );
+      })}
+      <button className="dashboard-nav-link logout" onClick={() => navigate('/')} type="button">LogOut <span className="logout-icon">🔁</span></button>
+    </nav>
+  );
+}
+
+export default Navbar;

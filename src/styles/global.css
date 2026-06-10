@@ -1,0 +1,9 @@
+/* Minimal global reset to remove default browser margins and ensure consistent box-sizing */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
