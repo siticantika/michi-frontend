@@ -462,3 +462,23 @@ html, body, #root {
     padding: 8px 14px 14px;
   }
 }
+
+.popup-form label {
+  font-size: 0.75rem;
+}
+
+.popup-input {
+  font-size: 0.78rem;
+  padding: 7px 10px;
+}
+
+.popup-save-btn {
+  font-size: 0.82rem;
+  padding: 9px;
+}
+
+.popup-menu-header-pemilik span:first-child,
+.popup-menu-header-kasir span:first-child,
+.popup-menu-header-admin span:first-child {
+  font-size: 0.9rem;
+}
