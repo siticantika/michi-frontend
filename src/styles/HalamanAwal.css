@@ -196,3 +196,56 @@
   .halamanawal-features{gap:12px}
 }
 
+/* Responsive Tablet */
+@media (max-width: 768px) {
+  .halamanawal-card {
+    flex-direction: column;
+    width: 95vw;
+    min-height: auto;
+  }
+
+  .halamanawal-card-left {
+    padding: 24px 20px;
+  }
+
+  .halamanawal-card-right {
+    padding: 24px 20px;
+  }
+
+  .halamanawal-brand {
+    font-size: 1.8rem;
+  }
+
+  .halamanawal-features {
+    gap: 8px;
+  }
+}
+/* Responsive HP kecil */
+@media (max-width: 480px) {
+  .halamanawal-card {
+    flex-direction: column;
+    width: 98vw;
+    min-height: auto;
+    border-radius: 16px;
+  }
+
+  .halamanawal-card-left {
+    padding: 24px 20px;
+  }
+
+  .halamanawal-card-right {
+    padding: 24px 20px;
+  }
+
+  .halamanawal-brand {
+    font-size: 1.5rem;
+  }
+
+  .halamanawal-role-group {
+    flex-direction: column;
+  }
+
+  .halamanawal-role-btn {
+    width: 100%;
+  }
+}
