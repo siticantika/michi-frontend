@@ -7,3 +7,18 @@ html, body, #root {
 *, *::before, *::after {
   box-sizing: border-box;
 }
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+#root {
+  overflow-x: hidden !important;
+  max-width: 100% !important;
+}

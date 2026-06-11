@@ -1904,8 +1904,29 @@ body{
     gap: 36px !important;
     justify-content: flex-start !important;
   }
-
-  
-
 }
 
+/* Fix horizontal scroll */
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+}
+
+.dashboard-container {
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+}
+
+.dashboard-main {
+  overflow-x: hidden !important;
+  max-width: 100% !important;
+}
+
+.menu-section {
+  overflow-x: hidden !important;
+  min-width: 0 !important;
+}
+
+.menu-cards {
+  overflow-x: hidden !important;
+}
