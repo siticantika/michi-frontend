@@ -155,5 +155,44 @@ body {
 /* Ensure card sits above background */
 .login-container > * { position: relative; z-index: 3; }
 
+/* Responsive Login Kasir */
+@media (max-width: 768px) {
+  .login-container {
+    width: 95vw;
+    margin: 20px auto;
+    padding: 24px 16px;
+  }
 
+  .popup-menu-wrapper {
+    width: 95vw;
+    max-width: 95vw;
+  }
 
+  .login-title {
+    font-size: 1.6rem;
+  }
+
+  .login-img {
+    width: 90px;
+    height: 90px;
+  }
+
+  .login-btn {
+    width: 80%;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    width: 98vw;
+    padding: 16px 10px;
+  }
+
+  .login-title {
+    font-size: 1.3rem;
+  }
+
+  .login-btn {
+    width: 100%;
+  }
+}
