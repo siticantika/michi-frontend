@@ -88,7 +88,7 @@ function Navbar({ open, setOpen }) {
             </button>
           );
         })}
-        <button className="dashboard-nav-link logout" onClick={() => { handleLogout(); toggle(false); }} type="button">LogOut <span className="logout-icon">🔁</span></button>
+        <button className="dashboard-nav-link logout" onClick={() => { handleLogout(); toggle(false); }} type="button">LogOut <span className="logout-icon">➡️</span></button>
       </nav>
       {/* backdrop for internal drawer */}
       {!isControlled && drawerOpen && (

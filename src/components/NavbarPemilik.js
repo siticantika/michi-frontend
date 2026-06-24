@@ -93,8 +93,8 @@ function NavbarPemilik({ open, setOpen }) {
         })}
         </div>
         <button className="dashboard-nav-link logout" onClick={() => { handleLogout(); toggle(false); }} type="button">
-          <span className="logout-icon">🔁</span>
           <span className="logout-text">LogOut</span>
+          <span className="logout-icon">➡️</span>
         </button>
       </nav>
       {!isControlled && drawerOpen && (
