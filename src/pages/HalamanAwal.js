@@ -7,6 +7,7 @@ function HalamanAwal() {
   const navigate = useNavigate();
   const [role, setRole] = useState('pemilik');
 
+  // Fungsi ini mengarahkan pengguna ke halaman login sesuai role yang dipilih.
   const handleMasuk = () => {
     if (role === 'pemilik') navigate('/pemilik/login');
     else if (role === 'kasir') navigate('/kasir/loginkasir');

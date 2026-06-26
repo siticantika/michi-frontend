@@ -23,7 +23,8 @@ function Dashboard() {
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
 
-  // Fetch menu dari backend
+  // Saat halaman kasir dibuka, sistem mengambil daftar menu dari backend.
+  // Menu ini kemudian ditampilkan ke layar agar kasir bisa memilih pesanan.
   useEffect(() => {
     fetch(`${API}/tes-menu`)
       .then(res => res.json())
@@ -68,6 +69,8 @@ function Dashboard() {
     setPopupMenu(null);
   };
 
+  // Saat kasir memilih menu, item dimasukkan ke keranjang.
+  // Keranjang ini berfungsi seperti daftar pesanan sementara sebelum checkout.
   const handleAddToCart = e => {
     e.preventDefault();
     if (!popupMenu) return;
@@ -92,6 +95,9 @@ function Dashboard() {
     setCart(cart.filter(item => item.id !== id));
   };
 
+  // Bagian ini adalah perhitungan subtotal dari keranjang.
+  // Setiap item dihitung dari harga dikali jumlah, lalu semua hasil dijumlahkan.
+  // Nilai ini menjadi dasar total yang akan dikirim ke backend saat checkout.
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
   // Handler untuk upload bukti Qris
@@ -100,6 +106,8 @@ function Dashboard() {
   };
 
   // Handler untuk Bayar Sekarang
+// Ketika kasir menekan tombol bayar, data keranjang dikirim ke backend.
+// Backend lalu menyimpan pesanan sebagai transaksi dan detail transaksi.
 const handlePayNow = async (e) => {
   e.preventDefault();
 
@@ -107,6 +115,9 @@ const handlePayNow = async (e) => {
     const token = localStorage.getItem('token');
     const formData = new FormData();
 
+    // Bagian ini mengirim data checkout ke backend.
+    // Setelah tombol bayar dipencet, data pesanan dikirim dan disimpan sebagai transaksi.
+    // Nilai subtotal dari frontend dikirim sebagai total transaksi.
     formData.append("kasir_id", 1);
     formData.append("total", subtotal);
     formData.append("metode", paymentMethod);
@@ -129,6 +140,8 @@ const handlePayNow = async (e) => {
       formData.append("bukti_qris", qrisFile); // FILE ASLI
     }
 
+    // Saat kasir menekan bayar, frontend mengirim data pesanan ke endpoint /transaksi di backend.
+    // Backend lalu menyimpan data ke tabel transaksi dan transaksi_detail.
     const res = await fetch(`${API}/transaksi`, {
       method: "POST",
       headers: {

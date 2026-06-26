@@ -88,7 +88,7 @@ function TambahMenu() {
   });
   const [showDeleteIdx, setShowDeleteIdx] = useState(null);
 
-  // Fetch menu dari backend
+  // Bagian ini mengambil daftar menu dari backend saat halaman pertama kali dibuka.
   useEffect(() => {
     fetch(`${API}/tes-menu`)
       .then(res => res.json())
@@ -117,7 +117,7 @@ function TambahMenu() {
       .catch(() => setMenus([]));
   }, []);
 
-  // Fungsi untuk edit menu
+  // Fungsi ini digunakan untuk mengubah data menu yang sudah ada di database.
   const editMenu = async (idx, updatedMenu) => {
     try {
       const menu = menus[idx];
@@ -167,7 +167,7 @@ function TambahMenu() {
     }
   };
 
-  // Fungsi untuk delete menu
+  // Fungsi ini digunakan untuk menghapus menu dari sistem setelah dipilih.
   const deleteMenu = async (idx) => {
     try {
       const menu = menus[idx];
@@ -192,7 +192,7 @@ function TambahMenu() {
     }
   };
 
-  // Filter menu sesuai tipe dan pencarian
+  // Bagian ini memfilter menu berdasarkan kategori dan kata kunci pencarian.
   const filteredMenus = menus
     .map((menu, idx) => ({ ...menu, globalIdx: idx }))
     .filter(menu => {
@@ -209,7 +209,7 @@ function TambahMenu() {
       return categoryMatch && searchMatch;
     });
 
-  // Edit popup logic
+  // Bagian ini membuka popup edit dan mengisi form dengan data menu yang dipilih.
   const openEditPopup = (idx) => {
     setEditMenuIdx(idx);
     const menu = menus[idx];

@@ -12,6 +12,8 @@ function Transaksi() {
   const [openIndex, setOpenIndex] = React.useState(null);
   const [completedSet, setCompletedSet] = React.useState(new Set());
 
+  // Bagian ini menghitung total pendapatan, total cash, dan total QRIS dari daftar transaksi yang sudah diterima dari backend.
+  // Nilai ini dipakai untuk menampilkan ringkasan data di halaman riwayat pesanan.
   const totalPendapatan = transaksiList.reduce((sum, t) => sum + (t.total || 0), 0);
   const totalCash = transaksiList.filter(t => t.metode === 'cash').reduce((s, t) => s + (t.total || 0), 0);
   const totalQris = transaksiList.filter(t => t.metode === 'qris').reduce((s, t) => s + (t.total || 0), 0);

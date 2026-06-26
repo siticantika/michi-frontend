@@ -10,6 +10,7 @@ function Navbar({ open, setOpen }) {
   const drawerOpen = isControlled ? open : internalOpen;
   const toggle = isControlled ? setOpen : setInternalOpen;
 
+  // Fungsi logout membersihkan sesi dan mengirimkan sinyal ke backend agar session berakhir.
   const handleLogout = async () => {
   const token = localStorage.getItem('token');
   try {

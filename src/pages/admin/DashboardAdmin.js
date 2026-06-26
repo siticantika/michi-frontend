@@ -55,6 +55,7 @@ function DashboardAdmin(){
   }
 };
 
+  // Fungsi ini mengambil daftar user dari backend untuk ditampilkan di dashboard admin.
   const fetchUsers = async () => {
     try {
       const tokenLocal = localStorage.getItem('adminToken');
@@ -79,6 +80,7 @@ function DashboardAdmin(){
     }
   };
 
+  // Fungsi ini mengambil log aktivitas berdasarkan tanggal tertentu untuk ditampilkan ke admin.
   const fetchActivityLog = async (tanggal = '') => {
     try {
       const token = localStorage.getItem('adminToken');

@@ -16,6 +16,9 @@ import LaporanBulananPemilik from './pages/pemilik/laporan';
 
 function App() {
   return (
+    // Rute halaman ditentukan di sini.
+    // Setiap path mengarahkan ke halaman yang sesuai untuk kasir, owner, atau admin.
+    // Pemeriksaan hak akses utamanya dilakukan di backend lewat middleware, bukan hanya di sisi tampilan.
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HalamanAwal />} />

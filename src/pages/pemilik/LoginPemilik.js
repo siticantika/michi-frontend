@@ -10,10 +10,14 @@ function LoginPemilik() {
   const [showPopup, setShowPopup] = useState(true);
   const navigate = useNavigate();
 
+  // Bagian ini memproses login pemilik dengan mengirim username dan password ke backend.
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     try {
+      // Frontend mengirim username dan password ke backend untuk divalidasi.
+      // Jika role-nya owner, sistem mengarahkan ke halaman pemilik dan menyimpan token.
+      // Token ini nantinya dipakai untuk mengakses endpoint owner yang dilindungi.
       const res = await fetch(`${API}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -21,6 +25,7 @@ function LoginPemilik() {
       });
       const data = await res.json();
       if (data.message === "Login berhasil" && data.user && data.user.role === 'owner') {
+        // Jika login berhasil, token dan data user disimpan untuk mengakses halaman owner.
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         setError("");

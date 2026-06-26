@@ -40,7 +40,9 @@ useEffect(() => {
 
       const token = localStorage.getItem('token');
 
-      // 🔥 FIX PENTING DI SINI
+      // Bagian ini mengambil data grafik dari backend berdasarkan bulan yang dipilih.
+      // Nilai pemasukan dan pengeluaran per hari kemudian dipakai untuk menggambar grafik.
+      // Data ini membantu owner melihat tren keuangan dalam bentuk visual yang lebih mudah dipahami.
       const res = await fetch(
         `${base}/api/owner/grafik-bulanan?bulan=${bulan}`,
         { 
@@ -54,6 +56,7 @@ useEffect(() => {
 
       const json = await res.json();
 
+      // Data dari backend sudah datang dalam format per hari, lalu diolah agar grafik bisa menampilkan semua hari dalam bulan tersebut.
       const raw = (json.data || []).map(item => ({
         date: (item.date || '').slice(0,10),
         pemasukan: Number(item.pemasukan) || 0,

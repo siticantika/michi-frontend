@@ -12,10 +12,14 @@ function PengeluaranPemilik() {
   const [form, setForm] = useState({ tanggal: "", waktu: "", keterangan: "", jumlah: "" });
   const [editingItem, setEditingItem] = useState(null);
 
+  // Saat halaman dibuka, data pengeluaran akan langsung diambil dari backend.
+  // Tujuannya agar owner bisa melihat catatan pengeluaran hari ini tanpa refresh manual.
   useEffect(() => {
     fetchPengeluaran();
   }, []);
 
+  // Fungsi ini mengambil data pengeluaran dari API lalu menyimpannya ke state.
+  // Data ini nanti dipakai untuk menampilkan tabel dan menghitung total pengeluaran.
   const fetchPengeluaran = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -33,6 +37,8 @@ function PengeluaranPemilik() {
     }
   };
 
+  // Saat tombol tambah diklik, form popup dibuka dan state form dikosongkan.
+  // Ini memudahkan owner untuk memasukkan pengeluaran baru.
   const handleOpenPopup = () => {
     setEditingItem(null);
     setForm({ tanggal: "", waktu: "", keterangan: "", jumlah: "" });
@@ -53,6 +59,8 @@ function PengeluaranPemilik() {
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
+  // Fungsi ini menangani proses simpan atau edit pengeluaran.
+  // Jika sedang mengedit, request dikirim ke endpoint PUT; jika menambah baru, ke POST.
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -85,6 +93,8 @@ function PengeluaranPemilik() {
     }
   };
 
+  // Bagian ini menghitung total pengeluaran dan jumlah data yang ditampilkan.
+  // Nilai ini penting untuk memberi gambaran ringkas kepada owner saat melihat dashboard pengeluaran.
   const totalPengeluaran = pengeluaranList.reduce((s, it) => s + parseInt(it.jumlah || 0, 10), 0);
   const pengeluaranCount = pengeluaranList.length;
 

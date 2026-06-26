@@ -12,6 +12,7 @@ function Pengeluaran() {
   const [showPopup, setShowPopup] = useState(false);
   const [form, setForm] = useState({ keterangan: '', jumlah: '' });
 
+  // Bagian ini mengambil daftar pengeluaran dari backend saat halaman dibuka.
   useEffect(() => {
     fetch(`${API}/api/pengeluaran`)
       .then(res => res.json())
@@ -27,6 +28,7 @@ function Pengeluaran() {
       });
   }, []);
 
+  // Nilai ini digunakan untuk menghitung total pengeluaran yang tampil di ringkasan halaman.
   const totalPengeluaran = Array.isArray(pengeluaranList)
     ? pengeluaranList.reduce((sum, p) => sum + (Number(p.jumlah) || 0), 0)
     : 0;
@@ -36,6 +38,7 @@ function Pengeluaran() {
     setForm(f => ({ ...f, [name]: value }));
   };
 
+  // Fungsi ini mengirim data pengeluaran baru ke backend lalu memperbarui daftar yang tampil.
   const handleSubmit = async e => {
     e.preventDefault();
     if (!form.keterangan || !form.jumlah) return;
@@ -71,6 +74,7 @@ function Pengeluaran() {
     }
   };
 
+  // Fungsi ini memformat waktu agar tampil lebih ringkas di tampilan daftar pengeluaran.
   const formatWaktu = (waktu) => {
     if (!waktu) return '';
     return waktu.slice(0, 5);

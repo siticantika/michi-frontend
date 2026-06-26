@@ -16,17 +16,21 @@ function PemasukanPemilik() {
 		jumlah: ""
 	});
 
+	// Saat halaman pertama kali dibuka, sistem mengambil data pemasukan hari ini dari backend.
+	// Tujuannya agar owner bisa melihat catatan pemasukan secara langsung tanpa refresh manual.
 	useEffect(() => {
 		fetchPemasukan();
 	}, []);
 
+	// Fungsi ini mengambil data pemasukan dari API dan menyimpannya ke state agar tampil di halaman.
+	// Data ini nantinya dipakai untuk menghitung total pemasukan dan menampilkan tabel.
 	const fetchPemasukan = async () => {
 		try {
 			const token = localStorage.getItem('token');
 			const response = await fetch(`${API}/api/keuangan/pemasukan`, {
 				headers: {
   					Authorization: `Bearer ${localStorage.getItem("token")}`
-				}
+						}
 			});
 			if (response.ok) {
 				const data = await response.json();
@@ -44,6 +48,8 @@ function PemasukanPemilik() {
 		setForm({ ...form, [e.target.name]: e.target.value });
 	};
 
+	// Saat owner menambahkan pemasukan, data dikirim ke backend lalu daftar diperbarui.
+	// Proses ini membuat catatan pemasukan baru masuk ke sistem dan muncul di halaman owner.
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {

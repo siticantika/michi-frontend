@@ -10,10 +10,14 @@ function LoginAdmin(){
   const [showPopup, setShowPopup] = useState(true);
   const navigate = useNavigate();
 
+  // Bagian ini mengirim kredensial admin ke backend untuk verifikasi login.
   const handleSubmit = async (e) => {
     e && e.preventDefault();
     setError('');
     try{
+      // Frontend mengirim username dan password admin ke endpoint login admin khusus.
+      // Jika berhasil, token admin disimpan untuk membatasi akses ke fitur admin.
+      // Token ini dipakai oleh halaman dashboard admin untuk memastikan hanya admin yang boleh masuk.
       const res = await fetch(`${process.env.REACT_APP_API_URL}/api/admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -21,6 +25,7 @@ function LoginAdmin(){
       });
       const data = await res.json();
       if (res.ok && data.token) {
+        // Token admin disimpan agar halaman dashboard admin bisa terbuka dengan sesi yang valid.
         localStorage.setItem('adminToken', data.token);
         navigate('/admin/dashboard');
       } else {

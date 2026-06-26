@@ -32,6 +32,9 @@ function LaporanBulananPemilik() {
 		return () => {};
 	}, [tahun, bulan]);
 
+	// Bagian ini mengambil data laporan bulanan dari backend.
+	// Data ini dipakai untuk menampilkan ringkasan keuangan dan daftar transaksi per bulan.
+	// Fungsi ini mengambil data laporan dari backend untuk ditampilkan sesuai bulan yang dipilih.
 	const fetchLaporan = async () => {
 		try {
 			setLoading(true);
@@ -48,6 +51,7 @@ function LaporanBulananPemilik() {
 			const data = await response.json();
 			setLaporanData(data);
 		} catch (err) {
+			// Jika request gagal, error disimpan ke state agar muncul pesan yang jelas ke user.
 			setError(err.message);
 			console.error('Error fetching laporan:', err);
 		} finally {
@@ -72,7 +76,8 @@ function LaporanBulananPemilik() {
   }
 };
 
-	// Export functions: PDF and Excel
+	// Bagian ini menangani fitur ekspor laporan menjadi PDF dan Excel.
+	// Data yang diekspor diambil dari state laporanData yang sebelumnya diambil dari backend.
 
 	const logAktivitas = async (aksi) => {
 		try {
@@ -89,6 +94,7 @@ function LaporanBulananPemilik() {
 			console.warn('logAktivitas failed', e);
 		}
 	};
+	// Fungsi ini membuat file PDF berisi ringkasan laporan dan daftar transaksi.
 	const exportPDF = () => {
 		// Log that owner is exporting PDF
 		logAktivitas('Export PDF Laporan Bulanan');
@@ -171,6 +177,7 @@ function LaporanBulananPemilik() {
 		}
 	};
 
+	// Fungsi ini membuat file Excel dengan format tabel yang bisa langsung dibuka di spreadsheet.
 	const exportExcel = () => {
 		// Log that owner is exporting Excel
 		logAktivitas('Export Excel Laporan Bulanan');
@@ -237,6 +244,7 @@ function LaporanBulananPemilik() {
 		}
 	};
 
+	// Fungsi ini memilih format export yang dipilih user, apakah PDF atau Excel.
 	const handleDownload = () => {
 		if (exportFormat === 'pdf') {
 			exportPDF();

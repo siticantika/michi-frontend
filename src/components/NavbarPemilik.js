@@ -10,6 +10,7 @@ function NavbarPemilik({ open, setOpen }) {
   const drawerOpen = isControlled ? open : internalOpen;
   const toggle = isControlled ? setOpen : setInternalOpen;
 
+  // Fungsi logout digunakan untuk mengakhiri sesi owner dan menghapus token dari browser.
   const handleLogout = async () => {
   try {
     const token = localStorage.getItem('token');

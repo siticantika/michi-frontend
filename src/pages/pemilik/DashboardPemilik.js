@@ -24,6 +24,10 @@ function DashboardPemilik() {
     return () => clearInterval(interval);
   }, []);
 
+  // Bagian ini mengambil data dashboard owner dari backend.
+  // Data yang diterima nanti dipakai untuk menampilkan total pemasukan, pengeluaran, laba, dan daftar transaksi.
+  // Fungsi ini mengambil data dari backend saat halaman dashboard dibuka.
+  // Jika request berhasil, data akan disimpan ke state dan ditampilkan ke layar.
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
@@ -34,12 +38,14 @@ function DashboardPemilik() {
           'Authorization': `Bearer ${token}`
         }
       });
+      // Jika response dari backend tidak berhasil, error akan dilempar dan ditangani di bagian catch.
       if (!response.ok) {
         throw new Error('Failed to fetch dashboard data');
       }
       const data = await response.json();
       setDashboardData(data);
     } catch (err) {
+      // Error ini ditampilkan ke user lewat state error agar halaman tidak blank saat ada masalah.
       setError(err.message);
       console.error('Error fetching dashboard data:', err);
     } finally {

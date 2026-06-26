@@ -11,11 +11,16 @@ function Loginkasir() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Bagian ini menangani proses login kasir saat form dikirim.
+  // Jika data benar, sistem menyimpan token dan mengarahkan ke dashboard kasir.
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
     try {
+      // Frontend mengirim username dan password ke backend untuk divalidasi.
+      // Setelah login berhasil, frontend menyimpan token di localStorage agar sesi tetap tersimpan.
+      // Token ini akan dipakai di request berikutnya untuk mengakses halaman yang dibatasi.
       const res = await fetch(`${API}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -31,6 +36,7 @@ function Loginkasir() {
         return;
       }
       if (data && data.message === "Login berhasil" && data.user && data.user.role === 'kasir') {
+        // Token dan data user disimpan di browser agar halaman berikutnya bisa mengenali sesi login.
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         setError("");
@@ -65,6 +71,7 @@ function Loginkasir() {
             <span>KASIR LOGIN</span>
           </div>
           <div className="popup-menu-body">
+            {/* Form ini menerima username dan password kasir sebelum login diproses. */}
             <form className="popup-form" onSubmit={handleSubmit}>
               <label>Username</label>
               <input
