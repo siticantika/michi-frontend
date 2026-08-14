@@ -67,7 +67,8 @@ function TambahMenu() {
   const [addForm, setAddForm] = useState({
     nama: '',
     emoji: '',
-    harga: '',
+    harga_outlet:'',
+    harga_grab:'',
     kategori: '',
     deskripsi: ''
   });
@@ -84,7 +85,8 @@ function TambahMenu() {
     emoji: '',
     nama: '',
     deskripsi: '',
-    harga: ''
+    harga_outlet:'',
+    harga_grab:'',
   });
   const [showDeleteIdx, setShowDeleteIdx] = useState(null);
 
@@ -127,7 +129,8 @@ function TambahMenu() {
         body: JSON.stringify({
           nama: updatedMenu.nama,
           icon: updatedMenu.emoji,
-          harga: updatedMenu.harga,
+          harga_outlet: updatedMenu.harga_outlet,
+          harga_grab: updatedMenu.harga_grab,
           kategori: menu.kategori,
           deskripsi: updatedMenu.deskripsi,
           varian: updatedMenu.varian, // gunakan hasil edit terbaru
@@ -142,26 +145,31 @@ function TambahMenu() {
       // Refresh menu
       const menuRes = await fetch(`${API}/tes-menu`, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
       const menuData = await menuRes.json();
-      setMenus(menuData.map(menu => {
-        let varianArr = menu.varian;
-        let levelArr = menu.level;
-        if (typeof varianArr === 'string') {
-          varianArr = varianArr.split(',').map(v => v.trim()).filter(Boolean);
-        }
-        if (typeof levelArr === 'string') {
-          levelArr = levelArr.split(',').map(l => l.trim()).filter(Boolean);
-        }
-        let label = '';
-        if (varianArr && varianArr.length > 0) label = 'Varian';
-        else if (levelArr && levelArr.length > 0) label = 'Level';
-        return {
-          ...menu,
-          emoji: menu.emoji || menu.icon || '',
-          varian: varianArr,
-          level: levelArr,
-          label,
-        };
-      }));
+setMenus(menuData.map(menu => {
+    let varianArr = menu.varian;
+    let levelArr = menu.level;
+
+    if (typeof varianArr === 'string') {
+        varianArr = varianArr.split(',').map(v => v.trim()).filter(Boolean);
+    }
+
+    if (typeof levelArr === 'string') {
+        levelArr = levelArr.split(',').map(v => v.trim()).filter(Boolean);
+    }
+
+    let label = '';
+
+    if (varianArr?.length) label = 'Varian';
+    else if (levelArr?.length) label = 'Level';
+
+    return {
+        ...menu,
+        emoji: menu.icon || '',
+        varian: varianArr,
+        level: levelArr,
+        label,
+    };
+}));
     } catch (err) {
       alert('Gagal terhubung ke server');
     }
@@ -217,7 +225,8 @@ function TambahMenu() {
       emoji: menu.emoji,
       nama: menu.nama,
       deskripsi: menu.deskripsi,
-      harga: menu.harga,
+      harga_outlet: menu.harga_outlet,
+      harga_grab: menu.harga_grab,
       varian: Array.isArray(menu.varian) ? menu.varian : (menu.varian ? [menu.varian] : []),
       level: Array.isArray(menu.level) ? menu.level : (menu.level ? [menu.level] : []),
     });
@@ -239,7 +248,8 @@ function TambahMenu() {
       emoji: editForm.emoji,
       nama: editForm.nama,
       deskripsi: editForm.deskripsi,
-      harga: editForm.harga,
+      harga_outlet: editForm.harga_outlet,
+      harga_grab: editForm.harga_grab,
       varian: showVarian && varianList.length > 0 ? varianList.join(',') : null,
       level: showLevel && levelList.length > 0 ? levelList.join(',') : null,
     });
@@ -270,7 +280,8 @@ const handleSubmit = async (e) => {
       body: JSON.stringify({
         nama: addForm.nama,
         icon: addForm.emoji,
-        harga: addForm.harga,
+        harga_outlet: addForm.harga_outlet,
+        harga_grab: addForm.harga_grab,
         kategori: addForm.kategori,
         deskripsi: addForm.deskripsi || null,
         varian: showVarian && varianList.length > 0 ? varianList.join(',') : null,
@@ -375,7 +386,7 @@ const handleSubmit = async (e) => {
                 </div>
                 <div className="menu-card-title">{menu.nama}</div>
                 <div className="tambahmenu-card-desc">{menu.deskripsi}</div>
-                <div className="tambahmenu-card-price">Rp {parseInt(menu.harga).toLocaleString('id-ID')}</div>
+                <div className="tambahmenu-card-price">Rp {parseInt(menu.harga_outlet || 0).toLocaleString('id-ID')}</div>
                 <div className="menu-card-actions">
                   <button className="tambahmenu-card-edit" onClick={() => openEditPopup(menu.globalIdx)} type="button">📝 Edit</button>
                   <button className="tambahmenu-card-delete" onClick={() => openDeletePopup(menu.globalIdx)} type="button">🗑 Hapus</button>
@@ -396,8 +407,8 @@ const handleSubmit = async (e) => {
                   <input type="text" className="popup-input" value={addForm.nama} onChange={e => setAddForm(f => ({...f, nama: e.target.value}))} />
                   <label>Emoji Icon</label>
                   <input type="text" className="popup-input" value={addForm.emoji} onChange={e => setAddForm(f => ({...f, emoji: e.target.value}))} />
-                  <label>Harga</label>
-                  <input type="number" className="popup-input" value={addForm.harga} onChange={e => setAddForm(f => ({...f, harga: e.target.value}))} />
+                  <label>Harga Outlet</label><input type="number" className="popup-input" value={addForm.harga_outlet} onChange={e=>setAddForm(f=>({...f,harga_outlet:e.target.value}))} />
+                  <label>Harga Grab</label><input type="number" className="popup-input" value={addForm.harga_grab} onChange={e => setAddForm(f => ({...f, harga_grab: e.target.value}))} />
                   <label>Kategori</label>
                   <input type="text" className="popup-input" value={addForm.kategori} onChange={e => setAddForm(f => ({...f, kategori: e.target.value}))} placeholder="Makanan atau Minuman" />
                   <label>Deskripsi (Opsional)</label>
@@ -472,8 +483,10 @@ const handleSubmit = async (e) => {
                   <input type="text" className="popup-input" name="nama" value={editForm.nama} onChange={handleEditChange} />
                   <label>Keterangan Menu</label>
                   <input type="text" className="popup-input" name="deskripsi" value={editForm.deskripsi} onChange={handleEditChange} />
-                  <label>Harga Menu</label>
-                  <input type="number" className="popup-input" name="harga" value={editForm.harga} onChange={handleEditChange} />
+                  <label>Harga Outlet</label>
+                  <input type="number" className="popup-input" name="harga_outlet" value={editForm.harga_outlet} onChange={handleEditChange} />
+                  <label>Harga Grab</label>
+                  <input type="number" className="popup-input" name="harga_grab" value={editForm.harga_grab} onChange={handleEditChange} />
                   <div className="popup-checkbox-row">
                     <span className={showVarian ? 'popup-checkbox checked' : 'popup-checkbox'} onClick={() => setShowVarian(v => !v)}></span>
                     <label onClick={() => setShowVarian(v => !v)} style={{cursor:'pointer'}}>Menu ini punya varian</label>

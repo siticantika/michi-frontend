@@ -36,7 +36,6 @@ function NavbarPemilik({ open, setOpen }) {
   const navs = [
     { label: 'Dashboard', path: '/pemilik/dashboard' },
     { label: 'Pengeluaran', path: '/pemilik/pengeluaran' },
-    { label: 'Pemasukan', path: '/pemilik/pemasukan' },
     { label: 'Laporan Bulanan', path: '/pemilik/laporan' },
   ];
 

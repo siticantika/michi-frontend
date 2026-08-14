@@ -347,6 +347,31 @@
 /* also allow GrafikLaporan's .grafik-card to span the grid when inserted directly */
 .grafik-card { grid-column: 1 / 4; width: 100%; max-width: 1500px; margin: 8px auto 22px; box-sizing: border-box }
 .laporan-table-box { grid-column: 1 / 4 }
+
+
+.kategori-chart-card {
+	grid-column: 1 / 4;
+	width: 100%;
+	max-width: 1500px;
+	margin: 8px auto 22px;
+	box-sizing: border-box;
+	/* match the visual container of GrafikLaporan */
+	background: #fff;
+	border-radius: 18px;
+	border: 2px solid #ffd6e0;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+	padding: 18px 20px;
+}
+
+.kategori-chart-card .kategori-chart-inner {
+	height: 280px; /* same inner chart height used by GrafikLaporan */
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.kategori-chart-card .recharts-wrapper {
+	border-radius: 16px;
+}
 .export-card {
 	background: #fff;
 	border: 2px solid #ffd6e0;

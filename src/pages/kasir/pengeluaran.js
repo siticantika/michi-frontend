@@ -5,22 +5,37 @@ import '../../styles/PengeluaranPemilik.css';
 import Navbar from '../../components/Navbar';
 
 const API = process.env.REACT_APP_API_URL;
+const defaultCategoryOptions = ['Bahan Makanan', 'Non Makanan', 'Lainnya', 'Operasional', 'Peralatan'];
 
 function Pengeluaran() {
   const navigate = useNavigate();
   const [pengeluaranList, setPengeluaranList] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
-  const [form, setForm] = useState({ keterangan: '', jumlah: '' });
+  const [form, setForm] = useState({ keterangan: '', kategori_pengeluaran: '', kategori_baru: '', jumlah: '' });
+  const [categoryOptions, setCategoryOptions] = useState(defaultCategoryOptions);
 
   // Bagian ini mengambil daftar pengeluaran dari backend saat halaman dibuka.
   useEffect(() => {
     fetch(`${API}/api/pengeluaran`)
       .then(res => res.json())
       .then(data => {
-        // Normalize response to an array
-        if (Array.isArray(data)) setPengeluaranList(data);
-        else if (data && Array.isArray(data.data)) setPengeluaranList(data.data);
-        else setPengeluaranList([]);
+        const normalized = Array.isArray(data)
+          ? data
+          : data && Array.isArray(data.data)
+            ? data.data
+            : [];
+
+        setPengeluaranList(normalized);
+
+        const categories = Array.from(
+          new Set([
+            ...defaultCategoryOptions,
+            ...normalized
+              .map(item => item.kategori_pengeluaran)
+              .filter(Boolean)
+          ])
+        );
+        setCategoryOptions(categories);
       })
       .catch(err => {
         console.error('Gagal ambil pengeluaran:', err);
@@ -38,10 +53,16 @@ function Pengeluaran() {
     setForm(f => ({ ...f, [name]: value }));
   };
 
+  const getFinalCategory = () => {
+    const customCategory = form.kategori_baru?.trim();
+    return customCategory || form.kategori_pengeluaran || '';
+  };
+
   // Fungsi ini mengirim data pengeluaran baru ke backend lalu memperbarui daftar yang tampil.
   const handleSubmit = async e => {
     e.preventDefault();
-    if (!form.keterangan || !form.jumlah) return;
+    const finalCategory = getFinalCategory();
+    if (!form.keterangan || !form.jumlah || !finalCategory) return;
 
     try {
       const response = await fetch(`${API}/api/pengeluaran`, {
@@ -50,7 +71,11 @@ function Pengeluaran() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify({ keterangan: form.keterangan, jumlah: Number(form.jumlah) })
+        body: JSON.stringify({
+          keterangan: form.keterangan,
+          jumlah: Number(form.jumlah),
+          kategori_pengeluaran: finalCategory
+        })
       });
 
       if (!response.ok) {
@@ -65,7 +90,7 @@ function Pengeluaran() {
       else if (data && Array.isArray(data.data)) setPengeluaranList(data.data);
       else setPengeluaranList([]);
 
-      setForm({ keterangan: '', jumlah: '' });
+      setForm({ keterangan: '', kategori_pengeluaran: '', kategori_baru: '', jumlah: '' });
       setShowPopup(false);
 
     } catch (err) {
@@ -91,60 +116,69 @@ function Pengeluaran() {
       </header>
 
       <main className="pengeluaran-owner-bg">
-        <h1 className="pengeluaran-main-title">PENGELUARAN HARI INI</h1>
+        <div className="pengeluaran-kasir-fixed-content">
+          <h1 className="pengeluaran-main-title">PENGELUARAN HARI INI</h1>
 
-        <div className="owner-wrapper" style={{ position: 'relative' }}>
-          <div className="owner-summary-stats">
-            <div className="stat-box">
-              <span className="dashboardpemilik-stat-icon">💸</span>
-              <div className="stat-content">
-                <span className="dashboardpemilik-stat-label">Total Pengeluaran</span>
-                <div className="stat-row">
-                  <span className="stat-value orange">Rp {totalPengeluaran.toLocaleString('id-ID')}</span>
+          <div className="owner-wrapper" style={{ position: 'relative' }}>
+            <div className="owner-summary-stats">
+              <div className="stat-box">
+                <span className="dashboardpemilik-stat-icon">💸</span>
+                <div className="stat-content">
+                  <span className="dashboardpemilik-stat-label">Total Pengeluaran</span>
+                  <div className="stat-row">
+                    <span className="stat-value orange">Rp {totalPengeluaran.toLocaleString('id-ID')}</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="stat-box">
-              <span className="dashboardpemilik-stat-icon">🧾</span>
-              <div className="stat-content">
-                <span className="dashboardpemilik-stat-label">Jumlah Transaksi</span>
-                <div className="stat-row">
-                  <span className="stat-value">{pengeluaranList.length}</span>
+              <div className="stat-box">
+                <span className="dashboardpemilik-stat-icon">🧾</span>
+                <div className="stat-content">
+                  <span className="dashboardpemilik-stat-label">Jumlah Transaksi</span>
+                  <div className="stat-row">
+                    <span className="stat-value">{pengeluaranList.length}</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="stat-add-box">
-              <button className="pengeluaran-add-btn" onClick={() => { setForm({ keterangan: '', jumlah: '' }); setShowPopup(true); }}>
-                + Tambah Pengeluaran
-              </button>
+              <div className="stat-add-box">
+                <button className="pengeluaran-add-btn" onClick={() => { setForm({ keterangan: '', kategori_pengeluaran: '', kategori_baru: '', jumlah: '' }); setShowPopup(true); }}>
+                  + Tambah Pengeluaran
+                </button>
+              </div>
             </div>
           </div>
-            <div className="laporan-table-wrapper">
-              <div className="pengeluaran-table-box-pemilik transaksi-scroll">
-                {pengeluaranList.length === 0 ? (
-                  <div className="pengeluaran-empty">Belum ada pengeluaran hari ini.</div>
-                ) : (
-                  <div className="pengeluaran-card-list">
-                    {pengeluaranList.map((row, idx) => (
-                      <div className="pengeluaran-list-card-item" key={row.id || idx}>
-                        <div className="pengeluaran-card-top">
+        </div>
+
+        <div className="pengeluaran-kasir-scroll-content">
+          <div className="laporan-table-wrapper">
+            <div className="pengeluaran-table-box-pemilik transaksi-scroll">
+              {pengeluaranList.length === 0 ? (
+                <div className="pengeluaran-empty">Belum ada pengeluaran hari ini.</div>
+              ) : (
+                <div className="pengeluaran-card-list">
+                  {pengeluaranList.map((row, idx) => (
+                    <div className="pengeluaran-list-card-item" key={row.id || idx}>
+                      <div className="pengeluaran-card-top">
+                        <div className="pengeluaran-card-top-left">
                           <span className="pengeluaran-card-nomor">Pengeluaran {idx + 1}</span>
-                          <span className="pengeluaran-card-amount">Rp {Number(row.jumlah).toLocaleString('id-ID')}</span>
+                          <span className="pengeluaran-card-category">{row.kategori_pengeluaran || 'Lainnya'}</span>
                         </div>
-                        <div className="pengeluaran-card-bottom">
-                          <div className="pengeluaran-card-left">
-                            <span className="pengeluaran-card-icon">💸</span>
+                        <span className="pengeluaran-card-amount">Rp {Number(row.jumlah).toLocaleString('id-ID')}</span>
+                      </div>
+                      <div className="pengeluaran-card-bottom">
+                        <div className="pengeluaran-card-left">
+                          <span className="pengeluaran-card-icon">💸</span>
+                          <div>
                             <span className="pengeluaran-card-name">{row.keterangan}</span>
                           </div>
-                          <span className="pengeluaran-card-time">{formatWaktu(row.waktu)}</span>
                         </div>
+                        <span className="pengeluaran-card-time">{formatWaktu(row.waktu)}</span>
                       </div>
-                    ))}
-                  </div>
-                )}
-
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -162,6 +196,33 @@ function Pengeluaran() {
               <div className="pemasukan-popup-field">
                 <label>Keterangan Pengeluaran</label>
                 <input type="text" name="keterangan" placeholder="Contoh: Sendok" value={form.keterangan} onChange={handleChange} className="pemasukan-popup-input" />
+              </div>
+
+              <div className="pemasukan-popup-field">
+                <label>Kategori yang sudah ada</label>
+                <select
+                  name="kategori_pengeluaran"
+                  value={form.kategori_pengeluaran}
+                  onChange={handleChange}
+                  className="pemasukan-popup-input pemasukan-popup-select"
+                >
+                  <option value="">Pilih kategori</option>
+                  {categoryOptions.map((category) => (
+                    <option value={category} key={category}>{category}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="pemasukan-popup-field">
+                <label>Kategori baru (opsional)</label>
+                <input
+                  type="text"
+                  name="kategori_baru"
+                  placeholder="Masukkan kategori baru"
+                  value={form.kategori_baru}
+                  onChange={handleChange}
+                  className="pemasukan-popup-input"
+                />
               </div>
 
               <div className="pemasukan-popup-field">

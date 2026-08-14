@@ -74,7 +74,8 @@
 	font-size: 1.2rem;
 	margin-bottom: 6px;
 }
-.pengeluaran-popup-input {
+.pengeluaran-popup-input,
+.pemasukan-popup-select {
 	width: 100%;
 	padding: 12px 18px;
 	border-radius: 18px;
@@ -84,6 +85,16 @@
 	outline: none;
 	color: #a67c52;
 	margin-bottom: 0;
+}
+.pemasukan-popup-select {
+	-webkit-appearance: none !important;
+	-moz-appearance: none !important;
+	appearance: none !important;
+	cursor: pointer !important;
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0l5 6 5-6H0z' fill='%23a67c52'/%3E%3C/svg%3E");
+	background-repeat: no-repeat !important;
+	background-position: right 18px center !important;
+	background-size: 10px 6px !important;
 }
 .pengeluaran-popup-btn {
 	width: 100%;
@@ -109,7 +120,8 @@
 }
 .pengeluaran-owner-bg {
 	background: #fff5f7;
-	min-height: 100vh;
+	height: 100vh;
+	overflow: hidden;
 }
 .pengeluaran-header {
 	display: flex;
@@ -180,8 +192,10 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	padding: 0 0 40px;
-	padding-bottom: 60px;
+	padding: 0 0 16px;
+	height: calc(100vh - 72px);
+	box-sizing: border-box;
+	overflow: hidden;
 }
 .pengeluaran-main-title {
 	text-align: center;
@@ -191,6 +205,7 @@
 	color: #5a3e2b;
 	margin: 30px 0 25px;
 	letter-spacing: 2px;
+	flex-shrink: 0;
 }
 .pengeluaran-card-box {
 	background: linear-gradient(to bottom, #ff1a1a, #ff9900);
@@ -225,7 +240,23 @@
 	 the add-button column lines up with the right edge of the table */
 .pengeluaran-main .owner-summary-stats {
 	gap: 50px; /* larger horizontal gap for Pengeluaran page */
-	margin-bottom: 42px;
+	margin-bottom: 28px;
+	flex-shrink: 0;
+}
+
+.pengeluaran-main .owner-wrapper {
+	width: 94%;
+	max-width: 1500px;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	overflow: hidden;
+}
+
+.pengeluaran-owner-bg .laporan-table-title {
+	margin-top: 10px !important;
+	margin-bottom: 14px !important;
 }
 
 .stat-add-box {
@@ -273,6 +304,27 @@
   margin: 24px auto 0 auto;
   padding: 0 18px; /* left/right spacing matches dashboard */
   box-sizing: border-box;
+}
+
+.pengeluaran-main .owner-laporan-table-box {
+	flex: 1 1 auto;
+	min-height: 0;
+	margin-top: 0 !important;
+	margin-bottom: 0 !important;
+	overflow: hidden;
+	max-height: 290px !important;
+}
+
+.pengeluaran-main .laporan-table-wrapper {
+	max-height: 290px !important;
+	height: auto;
+	overflow-y: auto !important;
+	overflow-x: hidden;
+	min-height: 0;
+}
+
+.pengeluaran-owner-bg .owner-laporan-table-box .laporan-table {
+	table-layout: fixed !important;
 }
 .pengeluaran-table {
 	width: 100%;
@@ -415,7 +467,14 @@
 	margin-bottom: 5px !important;
 }
 
-.pemasukan-popup-input {
+.pemasukan-popup-field {
+	display: flex !important;
+	flex-direction: column !important;
+	gap: 6px !important;
+}
+
+.pemasukan-popup-input,
+.pemasukan-popup-select {
 	width: 100% !important;
 	padding: 10px 14px !important;
 	border-radius: 12px !important;
@@ -430,9 +489,22 @@
 	margin-bottom: 12px !important;
 }
 
+.pemasukan-popup-select {
+	-webkit-appearance: none !important;
+	-moz-appearance: none !important;
+	appearance: none !important;
+	cursor: pointer !important;
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0l5 6 5-6H0z' fill='%23a67c52'/%3E%3C/svg%3E") !important;
+	background-repeat: no-repeat !important;
+	background-position: right 14px center !important;
+	background-size: 10px 6px !important;
+	padding-right: 36px !important;
+}
+
 .pemasukan-popup-input::placeholder { color: #bbb !important; }
 
-.pemasukan-popup-input:focus { border-color: #ff7a5c !important; background: #fff !important; }
+.pemasukan-popup-input:focus,
+.pemasukan-popup-select:focus { border-color: #ff7a5c !important; background-color: #fff !important; }
 
 .pemasukan-popup-btn {
 	width: 100% !important;

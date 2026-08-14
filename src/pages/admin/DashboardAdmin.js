@@ -10,6 +10,8 @@ function DashboardAdmin(){
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [filterTanggal, setFilterTanggal] = useState('');
   const filterTanggalRef = React.useRef('');
+  const [filterAksi, setFilterAksi] = useState('');
+  const filterAksiRef = React.useRef('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [showAdd, setShowAdd] = useState(false);
@@ -26,12 +28,12 @@ function DashboardAdmin(){
     // poll online users & activity log periodically so admin sees updates shortly after logout
       const interval = setInterval(() => {
         fetchOnlineUsers();
-        fetchActivityLog(filterTanggalRef.current || '');
+        fetchActivityLog(filterTanggalRef.current || '', filterAksiRef.current || '');
       }, 8000);
 
     const onVisible = () => {
       fetchOnlineUsers();
-      fetchActivityLog(filterTanggal || '');
+      fetchActivityLog(filterTanggal || '', filterAksi || '');
     };
     document.addEventListener('visibilitychange', () => { if (!document.hidden) onVisible(); });
 
@@ -80,8 +82,8 @@ function DashboardAdmin(){
     }
   };
 
-  // Fungsi ini mengambil log aktivitas berdasarkan tanggal tertentu untuk ditampilkan ke admin.
-  const fetchActivityLog = async (tanggal = '') => {
+  // Fungsi ini mengambil log aktivitas berdasarkan tanggal dan tipe aksi tertentu untuk ditampilkan ke admin.
+  const fetchActivityLog = async (tanggal = '', aksi = '') => {
     try {
       const token = localStorage.getItem('adminToken');
       
@@ -94,9 +96,12 @@ function DashboardAdmin(){
         tanggalParam = localDate.toISOString().split('T')[0];
       }
       
-      console.log('Fetching log untuk tanggal:', tanggalParam);
+      const params = new URLSearchParams({ tanggal: tanggalParam });
+      if (aksi) params.set('aksi', aksi);
       
-      const url = `${process.env.REACT_APP_API_URL}/api/admin/activity-log?tanggal=${tanggalParam}`;
+      console.log('Fetching log untuk tanggal:', tanggalParam, 'aksi:', aksi || 'semua');
+      
+      const url = `${process.env.REACT_APP_API_URL}/api/admin/activity-log?${params.toString()}`;
       const res = await fetch(url, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -113,20 +118,29 @@ function DashboardAdmin(){
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [filterTanggal]);
+  }, [filterTanggal, filterAksi]);
 
   // saat filter tanggal berubah, panggil fetchActivityLog
   const handleFilterTanggal = (e) => {
     const val = e.target.value;
     setFilterTanggal(val);
     filterTanggalRef.current = val;
-    fetchActivityLog(val);
+    fetchActivityLog(val, filterAksiRef.current || '');
+  };
+
+  const handleFilterAksi = (e) => {
+    const val = e.target.value;
+    setFilterAksi(val);
+    filterAksiRef.current = val;
+    fetchActivityLog(filterTanggalRef.current || '', val);
   };
 
   const handleResetFilter = () => {
     setFilterTanggal('');
+    setFilterAksi('');
     filterTanggalRef.current = '';
-    fetchActivityLog(''); // kembali ke hari ini
+    filterAksiRef.current = '';
+    fetchActivityLog('', ''); // kembali ke hari ini dan semua aksi
   };
 
   const formatWaktu = (waktu) => {
@@ -382,7 +396,7 @@ function DashboardAdmin(){
           <section className="admin-log-card">
             <div className="admin-log-header">
               <span className="admin-log-title">Log Aktivitas User</span>
-              <div style={{display:'flex', alignItems:'center', gap:'8px'}}>
+              <div style={{display:'flex', alignItems:'center', gap:'8px', flexWrap:'wrap'}}>
                 <label className="admin-filter-label">Filter Tanggal:</label>
                 <input
                   type="date"
@@ -390,7 +404,22 @@ function DashboardAdmin(){
                   value={filterTanggal}
                   onChange={handleFilterTanggal}
                 />
-                {filterTanggal && (
+                <label className="admin-filter-label">Filter Aksi:</label>
+                <select
+                  className="admin-filter-input"
+                  value={filterAksi}
+                  onChange={handleFilterAksi}
+                >
+                  <option value="">Semua</option>
+                  <option value="login">Login</option>
+                  <option value="logout">Logout</option>
+                  <option value="transaksi">Transaksi</option>
+                  <option value="pengeluaran">Pengeluaran</option>
+                  <option value="pemasukan">Pemasukan</option>
+                  <option value="menu">Menu</option>
+                  <option value="export">Export</option>
+                </select>
+                {(filterTanggal || filterAksi) && (
                   <button className="admin-filter-reset" onClick={handleResetFilter}>Reset</button>
                 )}
               </div>

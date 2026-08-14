@@ -318,7 +318,8 @@ body{
 .dashboard-container {
   font-family: 'Poppins', 'Arial', sans-serif;
   background: #fff5f7;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 /* ============ HEADER ============ */
@@ -755,8 +756,10 @@ body{
   flex-direction: row;
   padding: 20px 20px 30px 20px;
   margin: 0;
-  min-height: calc(100vh - 1200px);
+  height: calc(100vh - 72px);
+  min-height: 0;
   gap: 20px;
+  overflow: hidden;
 }
 
 /* ============ MENU AREA (LEFT) ============ */
@@ -766,9 +769,9 @@ body{
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-
-  height: calc(100vh - 140px); /* tinggi sama dengan keranjang */
-  overflow: hidden; /* supaya parent tidak scroll */
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
 }
 /* CART EMPTY (keranjang kosong) */
 .cart-empty {
@@ -794,13 +797,44 @@ body{
   color: #777;
 }
 
+.menu-type-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1px;
+  margin-left: 5px;
+  margin-top: 0;
+  flex-shrink: 0;
+}
+
+.menu-price-filter {
+  display: flex;
+  align-items: center;
+  background: #fff2e6;
+  border: 1px solid #f3d0b5;
+  border-radius: 18px;
+  min-height: 42px;
+  padding: 0 12px;
+}
+
+.menu-price-filter-select {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #7a4b2f;
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: 'Poppins', Arial, sans-serif;
+  min-width: 130px;
+  height: 38px;
+  cursor: pointer;
+}
+
 .menu-type-btns {
   display: flex;
   gap: 18px;
-  margin-bottom: 1px;
-  margin-left: 5px; /* geser lebih ke kiri */
-  margin-top: 0;   /* jarak dari atas */
-  flex-shrink: 0; /* tidak ikut scroll */
+  margin: 0;
+  flex-shrink: 0;
 }
 .menu-type-btns button {
   background: #ffe0d6;
@@ -828,9 +862,10 @@ body{
   align-items: flex-start;
   width: 100%;
   padding: 10px;
-
-  overflow-y: auto;   /* scroll hanya di sini */
-  max-height: 100%;   /* ikut tinggi menu-section */
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 100%;
+  scrollbar-gutter: stable;
 }
 
 /* ============ MENU CARD ============ */

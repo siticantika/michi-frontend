@@ -11,6 +11,7 @@ function Dashboard() {
   const navigate = useNavigate();
   const [menus, setMenus] = useState([]);
   const [activeType, setActiveType] = useState('makanan');
+  const [jenisHarga, setJenisHarga] = useState('outlet');
   const [search, setSearch] = useState('');
   const [popupMenu, setPopupMenu] = useState(null);
   const [selectedVarian, setSelectedVarian] = useState('');
@@ -74,13 +75,20 @@ function Dashboard() {
   const handleAddToCart = e => {
     e.preventDefault();
     if (!popupMenu) return;
+
+    const popupHarga =
+      jenisHarga === 'outlet'
+        ? Number(popupMenu.harga_outlet ?? popupMenu.price ?? 0)
+        : Number(popupMenu.harga_grab ?? popupMenu.price ?? 0);
+
     const cartItem = {
       id: Date.now(),
       // include original menu id so checkout sends correct menu_id
       menu_id: popupMenu.id || popupMenu.menu_id || null,
       title: popupMenu.title || popupMenu.nama,
       img: popupMenu.img || null,
-      price: typeof popupMenu.price === 'number' ? popupMenu.price : (popupMenu.harga ? Number(popupMenu.harga) : 0),
+      price: popupHarga,
+      jenis_harga: jenisHarga === 'outlet' ? 'outlet' : 'grab',
       qty,
       // always take selected values (may be empty string -> null)
       varian: selectedVarian || null,
@@ -121,6 +129,7 @@ const handlePayNow = async (e) => {
     formData.append("kasir_id", 1);
     formData.append("total", subtotal);
     formData.append("metode", paymentMethod);
+    formData.append("jenis_harga", jenisHarga);
 
     formData.append(
       "items",
@@ -131,7 +140,8 @@ const handlePayNow = async (e) => {
           harga: item.price,
           jumlah: item.qty,
           varian: item.varian || null,
-          level: item.level || null
+          level: item.level || null,
+          jenis_harga: item.jenis_harga || null
         }))
       )
     );
@@ -217,9 +227,22 @@ const handlePayNow = async (e) => {
       </header>
       <main className="dashboard-main">
         <section className="menu-section">
-          <div className="menu-type-btns">
-            <button className={activeType === 'makanan' ? 'active' : ''} onClick={() => setActiveType('makanan')}>Makanan</button>
-            <button className={activeType === 'minuman' ? 'active' : ''} onClick={() => setActiveType('minuman')}>Minuman</button>
+          <div className="menu-type-filter-bar">
+            <div className="menu-price-filter">
+              <select
+                className="menu-price-filter-select"
+                value={jenisHarga}
+                onChange={e => setJenisHarga(e.target.value)}
+                aria-label="Jenis Harga"
+              >
+                <option value="outlet">Outlet</option>
+                <option value="grabfood">GrabFood</option>
+              </select>
+            </div>
+            <div className="menu-type-btns">
+              <button className={activeType === 'makanan' ? 'active' : ''} onClick={() => setActiveType('makanan')}>Makanan</button>
+              <button className={activeType === 'minuman' ? 'active' : ''} onClick={() => setActiveType('minuman')}>Minuman</button>
+            </div>
           </div>
           <div className="menu-cards">
             {menus
@@ -235,24 +258,31 @@ const handlePayNow = async (e) => {
                 const searchMatch = q === '' || name.includes(q) || desc.includes(q);
                 return categoryMatch && searchMatch;
               })
-              .map(menu => (
-                <div className="menu-card" key={menu.id} style={{position:'relative'}}>
-                  {menu.label && (
-                    <span className="menu-card-label" style={{position:'absolute',top:8,right:8,background:menu.label==='Varian'?'#e2c9a5':'#a5c9e2',color:'#a80000',padding:'2px 10px',borderRadius:'10px',fontSize:'0.5rem',fontWeight:'bold',zIndex:2}}>{menu.label}</span>
-                  )}
-                  <div className="menu-card-img">
-                    {menu.img ? (
-                      <img src={menu.img} alt={menu.nama} />
-                    ) : (
-                      <span style={{fontSize:'1.5rem'}}>{menu.emoji}</span>
+              .map(menu => {
+                const harga =
+                  jenisHarga === 'outlet'
+                    ? Number(menu.harga_outlet)
+                    : Number(menu.harga_grab);
+
+                return (
+                  <div className="menu-card" key={menu.id} style={{position:'relative'}}>
+                    {menu.label && (
+                      <span className="menu-card-label" style={{position:'absolute',top:8,right:8,background:menu.label==='Varian'?'#e2c9a5':'#a5c9e2',color:'#a80000',padding:'2px 10px',borderRadius:'10px',fontSize:'0.5rem',fontWeight:'bold',zIndex:2}}>{menu.label}</span>
                     )}
+                    <div className="menu-card-img">
+                      {menu.img ? (
+                        <img src={menu.img} alt={menu.nama} />
+                      ) : (
+                        <span style={{fontSize:'1.5rem'}}>{menu.emoji}</span>
+                      )}
+                    </div>
+                    <div className="menu-card-title">{menu.nama}</div>
+                    <div className="menu-card-desc">{menu.deskripsi}</div>
+                    <div className="menu-card-price">Rp {harga.toLocaleString('id-ID')}</div>
+                    <button className="menu-card-add" onClick={() => openPopup(menu)}>+ Pilih</button>
                   </div>
-                  <div className="menu-card-title">{menu.nama}</div>
-                  <div className="menu-card-desc">{menu.deskripsi}</div>
-                  <div className="menu-card-price">Rp {parseInt(menu.harga).toLocaleString('id-ID')}</div>
-                  <button className="menu-card-add" onClick={() => openPopup(menu)}>+ Pilih</button>
-                </div>
-              ))}
+                );
+              })}
           </div>
         </section>
         <aside className="cart-section">
@@ -270,6 +300,7 @@ const handlePayNow = async (e) => {
                 <div className="cart-item-top">
                   <div className="cart-item-title">{item.title}</div>
                 </div>
+                  <div className="cart-item-varian">Harga : {item.jenis_harga === 'outlet' ? 'Outlet' : 'GrabFood'}</div>
                   {item.varian && <div className="cart-item-varian">Varian: {item.varian}</div>}
                   {item.level && <div className="cart-item-varian">Level: {item.level}</div>}
                   <div className="cart-item-divider" />

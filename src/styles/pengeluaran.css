@@ -7,6 +7,7 @@
   position: relative;
 }
 
+
 /* ============ MAIN ============ */
 .pengeluaran-main {
   display: flex;
@@ -40,6 +41,65 @@
 }
 
 /* ============ WRAPPER ============ */
+
+.transaksi-container {
+  height: 100vh !important;
+  min-height: 100vh !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.transaksi-container .dashboard-header {
+  flex-shrink: 0 !important;
+}
+
+.transaksi-container > .pengeluaran-owner-bg {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.pengeluaran-kasir-fixed-content {
+  flex-shrink: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pengeluaran-kasir-scroll-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  padding-bottom: 12px;
+}
+
+.pengeluaran-kasir-scroll-content .laporan-table-wrapper {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.pengeluaran-kasir-scroll-content .pengeluaran-table-box-pemilik.transaksi-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 8px;
+  padding-bottom: 24px;
+}
 
 /* Override owner-specific styles that position the same class absolutely */
 .pengeluaran-container .pengeluaran-action .pengeluaran-add-btn {
@@ -92,16 +152,16 @@
 
 /* Force kasir laporan wrapper to not be constrained by owner dashboard CSS */
 .transaksi-container > .pengeluaran-owner-bg .laporan-table-wrapper {
-  max-height: calc(100vh - 120px) !important;
+  max-height: none !important;
   height: auto !important;
-  overflow-y: auto !important;
+  overflow: hidden !important;
   padding-bottom: 0 !important;
   box-sizing: border-box !important;
 }
 
 .transaksi-container > .pengeluaran-owner-bg .laporan-table-wrapper .pengeluaran-table-box-pemilik {
   max-height: none !important;
-  overflow-y: auto !important; /* allow internal scrolling if needed */
+  overflow-y: visible !important;
   padding-bottom: 0 !important;
 }
 .transaksi-container > .pengeluaran-owner-bg .pengeluaran-table-box-pemilik {
@@ -109,7 +169,7 @@
   flex: 1 1 auto !important;
   height: auto !important;
   max-height: none !important;
-  overflow-y: auto !important;
+  overflow-y: visible !important;
   display: block !important;
 }
 
@@ -126,13 +186,15 @@
   display: flex !important;
   flex-direction: column !important;
   flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
 }
 .transaksi-container > .pengeluaran-owner-bg .laporan-table-wrapper {
   display: flex !important;
   flex-direction: column !important;
   flex: 1 1 auto !important;
-  /* allow internal scrollbars to show */
-  overflow: visible !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
 }
 
 /* allow flex children to shrink correctly so inner scroll works */
@@ -574,13 +636,21 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
   padding-bottom: 8px;
   border-bottom: 0.5px solid #FDE8D8;
 }
 
+.pengeluaran-card-top-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 .pengeluaran-card-nomor {
   font-size: 0.88rem;
-  font-weight: 600;
+  font-weight: 700;
   color: #4a3c2a;
 }
 
@@ -613,6 +683,20 @@
   font-size: 0.80rem;
   font-weight: 600;
   color: #4a3c2a;
+}
+
+.pengeluaran-card-category {
+  display: inline-flex;
+  align-items: center;
+  background: #fff1d6;
+  color: #b45309;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid #f59e0b;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.75);
+  letter-spacing: 0.02em;
 }
 
 .pengeluaran-card-time {

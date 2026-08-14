@@ -11,12 +11,44 @@ function Transaksi() {
   const [previewQris, setPreviewQris] = React.useState(null);
   const [openIndex, setOpenIndex] = React.useState(null);
   const [completedSet, setCompletedSet] = React.useState(new Set());
+  const [jenisHargaFilter, setJenisHargaFilter] = React.useState("semua");
 
   // Bagian ini menghitung total pendapatan, total cash, dan total QRIS dari daftar transaksi yang sudah diterima dari backend.
   // Nilai ini dipakai untuk menampilkan ringkasan data di halaman riwayat pesanan.
   const totalPendapatan = transaksiList.reduce((sum, t) => sum + (t.total || 0), 0);
   const totalCash = transaksiList.filter(t => t.metode === 'cash').reduce((s, t) => s + (t.total || 0), 0);
   const totalQris = transaksiList.filter(t => t.metode === 'qris').reduce((s, t) => s + (t.total || 0), 0);
+
+  const toggleSelesai = async (row) => {
+    const nextDone = !completedSet.has(row.id);
+
+    setCompletedSet(prev => {
+      const next = new Set(prev);
+      if (nextDone) next.add(row.id);
+      else next.delete(row.id);
+      return next;
+    });
+
+    try {
+      await axios.patch(
+        `${API}/transaksi/${row.id}/selesai`,
+        { selesai: nextDone },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
+      );
+    } catch (err) {
+      setCompletedSet(prev => {
+        const next = new Set(prev);
+        if (nextDone) next.delete(row.id);
+        else next.add(row.id);
+        return next;
+      });
+      console.error('Gagal update status selesai', err);
+    }
+  };
 
   // normalize items dari API ke bentuk array { nama, qty, harga, icon?, varian?, level? }
   const parseItems = (raw) => {
@@ -49,31 +81,51 @@ function Transaksi() {
     }
   };
 
-  React.useEffect(() => {
-    const fetchTransaksi = async () => {
-      try {
-        const res = await axios.get(`${API}/transaksi`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-        const normalized = (res.data || []).map(r => {
-          const itemsRaw = r.items ?? r.detail ?? r.menu ?? r.menus;
-          return { ...r, items: parseItems(itemsRaw) };
-        });
-        setTransaksiList(normalized);
-        // init completed set from data (use id-based set to persist across pages)
-        const doneIds = new Set((normalized.filter(t => t.selesai && Number(t.selesai) === 1).map(t => t.id)));
-        setCompletedSet(doneIds);
-      } catch (err) {
-        console.error(err);
-        setError(err);
-      } finally {
-        setLoading(false);
+React.useEffect(() => {
+  const fetchTransaksi = async () => {
+    try {
+
+      let url = `${API}/transaksi`;
+
+      if (jenisHargaFilter !== "semua") {
+        url += `?jenis_harga=${jenisHargaFilter}`;
       }
-    };
-    fetchTransaksi();
-  }, []);
+
+      const res = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      });
+
+      const normalized = (res.data || []).map(r => {
+        const itemsRaw = r.items ?? r.detail ?? r.menu ?? r.menus;
+        return {
+          ...r,
+          items: parseItems(itemsRaw)
+        };
+      });
+
+      setTransaksiList(normalized);
+
+      const doneIds = new Set(
+        normalized
+          .filter(t => t.selesai && Number(t.selesai) === 1)
+          .map(t => t.id)
+      );
+
+      setCompletedSet(doneIds);
+
+    } catch (err) {
+      console.error(err);
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchTransaksi();
+
+}, [jenisHargaFilter]);
 
   if (loading) return <div className="loading-state">Loading...</div>;
   if (error) return <div className="error-state">Error: {error.message || 'Request failed'}</div>;
@@ -90,7 +142,6 @@ function Transaksi() {
 
       <main className="transaksi-main">
         <h1 className="transaksi-title">RIWAYAT PESANAN HARI INI</h1>
-
         <section className="transaksi-table-section">
           <div className="transaksi-wrapper">
             <div className="owner-summary-stats">
@@ -128,6 +179,17 @@ function Transaksi() {
               </div>
             </div>
 
+            <div className="transaksi-filter">
+              <select
+                value={jenisHargaFilter}
+                onChange={(e) => setJenisHargaFilter(e.target.value)}
+              >
+                <option value="semua">Semua Pesanan</option>
+                <option value="outlet">Outlet</option>
+                <option value="grabfood">GrabFood</option>
+              </select>
+            </div>
+
             {/* 4. SCROLL HANYA AREA KARTU INI SAJA */}
             <div className="transaksi-scroll">
               <div className="transaksi-card-list">
@@ -149,25 +211,7 @@ function Transaksi() {
         <input
           type="checkbox"
           checked={isDone}
-          onChange={async () => {
-            // optimistic update
-            setCompletedSet(prev => {
-              const next = new Set(prev);
-              if (next.has(row.id)) next.delete(row.id); else next.add(row.id);
-              return next;
-            });
-            try {
-              await axios.patch(`${API}/transaksi/${row.id}/selesai`)
-            } catch (err) {
-              // revert on error
-              setCompletedSet(prev => {
-                const next = new Set(prev);
-                if (isDone) next.add(row.id); else next.delete(row.id);
-                return next;
-              });
-              console.error('Gagal update status selesai', err);
-            }
-          }}
+          onChange={() => toggleSelesai(row)}
         />
         <span className="done-label">Selesai</span>
       </label>

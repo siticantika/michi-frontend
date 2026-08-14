@@ -7,10 +7,12 @@ import NavbarPemilik from "../../components/NavbarPemilik";
 function PengeluaranPemilik() {
   const API = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
+  const defaultCategoryOptions = ["Tagihan Bulanan", "Gaji Pegawai", "Bahan Makanan", "Non Makanan", "Lainnya", "Modal", "Investasi"];
   const [showPopup, setShowPopup] = useState(false);
   const [pengeluaranList, setPengeluaranList] = useState([]);
-  const [form, setForm] = useState({ tanggal: "", waktu: "", keterangan: "", jumlah: "" });
+  const [form, setForm] = useState({ tanggal: "", waktu: "", keterangan: "", kategori_pengeluaran: "", kategori_baru: "", jumlah: "" });
   const [editingItem, setEditingItem] = useState(null);
+  const [categoryOptions, setCategoryOptions] = useState(defaultCategoryOptions);
 
   // Saat halaman dibuka, data pengeluaran akan langsung diambil dari backend.
   // Tujuannya agar owner bisa melihat catatan pengeluaran hari ini tanpa refresh manual.
@@ -30,7 +32,18 @@ function PengeluaranPemilik() {
       });
       if (res.ok) {
         const data = await res.json();
-        setPengeluaranList(data || []);
+        const normalized = Array.isArray(data) ? data : [];
+        setPengeluaranList(normalized);
+
+        const categories = Array.from(
+          new Set([
+            ...defaultCategoryOptions,
+            ...normalized
+              .map((item) => item.kategori_pengeluaran)
+              .filter(Boolean)
+          ])
+        );
+        setCategoryOptions(categories);
       }
     } catch (err) {
       console.error("Error fetching pengeluaran:", err);
@@ -41,31 +54,50 @@ function PengeluaranPemilik() {
   // Ini memudahkan owner untuk memasukkan pengeluaran baru.
   const handleOpenPopup = () => {
     setEditingItem(null);
-    setForm({ tanggal: "", waktu: "", keterangan: "", jumlah: "" });
+    setForm({ tanggal: "", waktu: "", keterangan: "", kategori_pengeluaran: "", kategori_baru: "", jumlah: "" });
     setShowPopup(true);
   };
 
   const handleEditClick = (item) => {
     setEditingItem(item);
-    setForm({ tanggal: item.tanggal || "", waktu: item.waktu || "", keterangan: item.keterangan || "", jumlah: item.jumlah || "" });
+    setForm({
+      tanggal: item.tanggal || "",
+      waktu: item.waktu || "",
+      keterangan: item.keterangan || "",
+      kategori_pengeluaran: defaultCategoryOptions.includes(item.kategori_pengeluaran) ? item.kategori_pengeluaran : "",
+      kategori_baru: defaultCategoryOptions.includes(item.kategori_pengeluaran) ? "" : item.kategori_pengeluaran || "",
+      jumlah: item.jumlah || ""
+    });
     setShowPopup(true);
   };
 
   const handleClosePopup = () => {
     setEditingItem(null);
     setShowPopup(false);
-    setForm({ tanggal: "", waktu: "", keterangan: "", jumlah: "" });
+    setForm({ tanggal: "", waktu: "", keterangan: "", kategori_pengeluaran: "", kategori_baru: "", jumlah: "" });
   };
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const getFinalCategory = () => {
+    const customCategory = form.kategori_baru?.trim();
+    return customCategory || form.kategori_pengeluaran || "";
+  };
 
   // Fungsi ini menangani proses simpan atau edit pengeluaran.
   // Jika sedang mengedit, request dikirim ke endpoint PUT; jika menambah baru, ke POST.
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const finalCategory = getFinalCategory();
+    if (!finalCategory) return;
+
     try {
       const token = localStorage.getItem("token");
-      const body = { keterangan: form.keterangan, jumlah: form.jumlah };
+      const body = {
+        keterangan: form.keterangan,
+        jumlah: form.jumlah,
+        kategori_pengeluaran: finalCategory
+      };
 
       let res;
       if (editingItem && editingItem.id) {
@@ -112,7 +144,7 @@ function PengeluaranPemilik() {
       <header className="dashboard-header">
         <div className="logo-section">
           <img src="/logimichi.jpg" alt="Logo Michi" className="logo-img" />
-          <span className="logo-title">OWNER MICHI</span>
+          <span className="logo-title">PEMILIK MICHI</span>
         </div>
         <NavbarPemilik />
       </header>
@@ -155,6 +187,7 @@ function PengeluaranPemilik() {
                 <thead>
                   <tr>
                     <th>Jam</th>
+                    <th>Kategori</th>
                     <th>Keterangan</th>
                     <th>Jumlah</th>
                     <th>Aksi</th>
@@ -165,6 +198,7 @@ function PengeluaranPemilik() {
                     pengeluaranList.map((item, idx) => (
                       <tr key={item.id || idx}>
                         <td>{formatTime(item.waktu)}</td>
+                        <td>{item.kategori_pengeluaran || '-'}</td>
                         <td>{item.keterangan}</td>
                         <td>{formatCurrency(parseInt(item.jumlah || 0, 10))}</td>
                         <td>
@@ -174,7 +208,7 @@ function PengeluaranPemilik() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="4" style={{ textAlign: 'center', padding: '20px' }}>Belum Ada Pengeluaran Hari Ini</td>
+                      <td colSpan="5" style={{ textAlign: 'center', padding: '20px' }}>Belum Ada Pengeluaran Hari Ini</td>
                     </tr>
                   )}
                 </tbody>
@@ -198,8 +232,44 @@ function PengeluaranPemilik() {
                 </div>
 
                 <div className="pemasukan-popup-field">
+                  <label>Kategori yang sudah ada</label>
+                  <select
+                    name="kategori_pengeluaran"
+                    value={form.kategori_pengeluaran}
+                    onChange={handleChange}
+                    className="pemasukan-popup-input pemasukan-popup-select"
+                  >
+                    <option value="">Pilih kategori</option>
+                    {categoryOptions.map((category) => (
+                      <option value={category} key={category}>{category}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="pemasukan-popup-field">
+                  <label>Kategori baru (opsional)</label>
+                  <input
+                    type="text"
+                    name="kategori_baru"
+                    value={form.kategori_baru}
+                    onChange={handleChange}
+                    className="pemasukan-popup-input"
+                    placeholder="Masukkan kategori baru"
+                  />
+                </div>
+
+                <div className="pemasukan-popup-field">
                   <label>Jumlah Pengeluaran</label>
-                  <input type="number" name="jumlah" value={form.jumlah} onChange={handleChange} required className="pemasukan-popup-input" />
+                  <input
+                    type="number"
+                    name="jumlah"
+                    value={form.jumlah}
+                    onChange={handleChange}
+                    required
+                    className="pemasukan-popup-input"
+                    placeholder="Masukkan jumlah pengeluaran"
+                    min="0"
+                  />
                 </div>
 
                 <button type="submit" className="pemasukan-popup-btn">💾 {editingItem ? "Simpan Perubahan" : "Simpan Pengeluaran"}</button>

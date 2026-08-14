@@ -1,7 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/laporan.css";
+import "../../styles/DashboardPemilik.css";
 import GrafikLaporan from "../../components/GrafikLaporan";
+import {
+	BarChart,
+	Bar,
+	LabelList,
+	XAxis,
+	YAxis,
+	Tooltip,
+	CartesianGrid,
+	ResponsiveContainer,
+	Legend
+} from 'recharts';
 import NavbarPemilik from "../../components/NavbarPemilik";
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -20,17 +32,55 @@ function LaporanBulananPemilik() {
 		laba: 0,
 		transaksi: []
 	});
+	// default kategori and order required by UI (always show these categories)
+	const defaultKategori = [
+		{ kategori: 'Tagihan Bulanan', total: 0 },
+		{ kategori: 'Gaji Pegawai', total: 0 },
+		{ kategori: 'Bahan Makanan', total: 0 },
+		{ kategori: 'Non Makanan', total: 0 },
+		{ kategori: 'Lainnya', total: 0 }
+	];
+
+	// initialize with default categories so chart always shows them
+	const [pengeluaranKategori, setPengeluaranKategori] = useState(defaultKategori.map(d => ({ ...d })));
+	const [menuSalesBulanan, setMenuSalesBulanan] = useState([]);
+	const [menuOptionsBulanan, setMenuOptionsBulanan] = useState(['Semua']);
+	const [menuFilterBulanan, setMenuFilterBulanan] = useState('Semua');
+	const [menuLoadingBulanan, setMenuLoadingBulanan] = useState(true);
+	const [menuErrorBulanan, setMenuErrorBulanan] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
 
 	useEffect(() => {
 		fetchLaporan();
+		fetchPengeluaranKategori();
+		fetchMenuSalesBulanan(menuFilterBulanan);
 
 		// NOTE: removed automatic polling to avoid flicker/refresh.
 		// If manual refresh is desired, user can reload the page or we can add a button.
 
 		return () => {};
-	}, [tahun, bulan]);
+	}, [tahun, bulan, menuFilterBulanan]);
+
+	const fetchPengeluaranKategori = async () => {
+		try {
+			const token = localStorage.getItem('token');
+			const response = await fetch(`${API}/api/owner/grafik-pengeluaran-kategori?bulan=${tahun}-${bulan}`, {
+				headers: { 'Authorization': `Bearer ${token}` }
+			});
+			if (!response.ok) throw new Error('Failed to fetch pengeluaran kategori');
+			const res = await response.json();
+			// merge API data with defaultKategori so all categories always show
+			const apiData = (res.data || []).map(d => ({ kategori: d.kategori, total: Number(d.total || 0) }));
+			const merged = defaultKategori.map(def => {
+				const found = apiData.find(a => String(a.kategori).trim() === def.kategori);
+				return { kategori: def.kategori, total: found ? found.total : 0 };
+			});
+			setPengeluaranKategori(merged);
+		} catch (e) {
+			console.error('fetchPengeluaranKategori error', e);
+		}
+	};
 
 	// Bagian ini mengambil data laporan bulanan dari backend.
 	// Data ini dipakai untuk menampilkan ringkasan keuangan dan daftar transaksi per bulan.
@@ -56,6 +106,38 @@ function LaporanBulananPemilik() {
 			console.error('Error fetching laporan:', err);
 		} finally {
 			setLoading(false);
+		}
+	};
+
+	const fetchMenuSalesBulanan = async (filter = menuFilterBulanan) => {
+		try {
+			setMenuLoadingBulanan(true);
+			setMenuErrorBulanan(null);
+			const token = localStorage.getItem('token');
+			const response = await fetch(`${API}/api/owner/menu-sales-bulanan?bulan=${tahun}-${bulan}&filter=${encodeURIComponent(filter)}`, {
+				headers: {
+					'Authorization': `Bearer ${token}`
+				}
+			});
+			if (!response.ok) {
+				throw new Error('Failed to fetch monthly menu sales data');
+			}
+			const data = await response.json();
+			setMenuSalesBulanan(data.data || []);
+			if (Array.isArray(data.options) && data.options.length > 0) {
+				const normalizedOptions = data.options;
+				setMenuOptionsBulanan(normalizedOptions);
+				if (!normalizedOptions.includes(filter) && filter !== 'Semua') {
+					setMenuFilterBulanan('Semua');
+				}
+			} else {
+				setMenuOptionsBulanan(['Semua']);
+			}
+		} catch (err) {
+			setMenuErrorBulanan(err.message);
+			console.error('Error fetching monthly menu sales data:', err);
+		} finally {
+			setMenuLoadingBulanan(false);
 		}
 	};
 
@@ -122,13 +204,14 @@ function LaporanBulananPemilik() {
 			startY += 6;
 			doc.text(labaText, 14, startY);
 			startY += 8;
-			// Table
-			const head = [['Tanggal', 'Waktu', 'Jenis', 'Keterangan', 'Jumlah', 'Oleh']];
+			// Table (added Kategori column after Jenis)
+			const head = [['Tanggal', 'Jam', 'Jenis', 'Kategori', 'Keterangan', 'Jumlah', 'Ditambahkan Oleh']];
 			const body = (sortedTransaksi || []).map(item => {
 				const tanggal = item.tanggal ? (new Date(item.tanggal)).toLocaleDateString('id-ID') : '-';
 				const waktu = formatTime(item.waktu || '-');
 				const jenisRaw = item.jenis || '-';
 				const jenis = jenisRaw ? (jenisRaw.charAt(0).toUpperCase() + jenisRaw.slice(1)) : '-';
+				const kategori = jenisRaw === 'pengeluaran' ? (item.kategori_pengeluaran || '-') : '-';
 				const keterangan = jenisRaw === 'pemasukan'
 					? ((item.sumber && item.sumber.toString().trim() && item.sumber.toString().toLowerCase() !== 'manual')
 						? item.sumber
@@ -136,8 +219,17 @@ function LaporanBulananPemilik() {
 					: (item.keterangan || '-');
 				const amount = item.jumlah ?? item.nominal ?? item.total ?? 0;
 				const oleh = item.ditambahkan_oleh || '-';
-				return [tanggal, waktu, jenis, keterangan, formatCurrency(amount), oleh];
+				return [tanggal, waktu, jenis, kategori, keterangan, formatCurrency(amount), oleh];
 			});
+			const kategoriSummaryMap = (sortedTransaksi || []).reduce((acc, item) => {
+				if (item?.jenis !== 'pengeluaran') return acc;
+				const kategoriNama = String(item.kategori_pengeluaran || '').trim();
+				if (!kategoriNama) return acc;
+				const amount = Number(item.jumlah ?? item.nominal ?? item.total ?? 0);
+				acc[kategoriNama] = (acc[kategoriNama] || 0) + amount;
+				return acc;
+			}, {});
+			const kategoriSummaryRows = Object.entries(kategoriSummaryMap).map(([kategori, total]) => [kategori, formatCurrency(total)]);
 			autoTable(doc, {
 				startY: startY,
 				head: head,
@@ -148,18 +240,35 @@ function LaporanBulananPemilik() {
 				bodyStyles: { fillColor: [255, 255, 255] },
 				margin: { left: 14, right: 14 },
 				didParseCell: function(data) {
-					// color the Jumlah column (index 4) based on Jenis
-					if (data.column.index === 4 && data.section === 'body') {
-						const jenisCell = data.row.raw[2] || '';
-						if (jenisCell === 'Pemasukan') {
-							data.cell.styles.textColor = [22, 163, 74];
-						} else {
-							data.cell.styles.textColor = [220, 38, 38];
+					// color the Jumlah column (index 5) based on Jenis (we added Kategori column)
+						if (data.column.index === 5 && data.section === 'body') {
+							const jenisCell = data.row.raw[2] || '';
+							if (jenisCell === 'Pemasukan') {
+								data.cell.styles.textColor = [22, 163, 74];
+							} else {
+								data.cell.styles.textColor = [220, 38, 38];
+							}
+							data.cell.styles.fontStyle = 'bold';
 						}
-						data.cell.styles.fontStyle = 'bold';
-					}
 				}
 			});
+			const summaryStartY = doc.lastAutoTable?.finalY ? doc.lastAutoTable.finalY + 10 : 30;
+			if (kategoriSummaryRows.length > 0) {
+				doc.setFontSize(11);
+				doc.setFont('helvetica', 'bold');
+				doc.setTextColor(0);
+				doc.text('Ringkasan Pengeluaran Berdasarkan Kategori', 14, summaryStartY + 12);
+				autoTable(doc, {
+					startY: summaryStartY + 18,
+					head: [['Kategori', 'Total Pengeluaran']],
+					body: kategoriSummaryRows,
+					styles: { fontSize: 10 },
+					headStyles: { fillColor: [249, 115, 22], textColor: 255 },
+					alternateRowStyles: { fillColor: [255, 247, 243] },
+					bodyStyles: { fillColor: [255, 255, 255] },
+					margin: { left: 14, right: 14 }
+				});
+			}
 			// Totals are shown in the summary above; no totals printed here.
 			// Footer printed date
 			doc.setFontSize(8);
@@ -195,14 +304,15 @@ function LaporanBulananPemilik() {
 			aoa.push(["Total Pengeluaran", `Rp ${Number(laporanData.totalPengeluaran).toLocaleString('id-ID')}`]);
 			aoa.push(["Laba/Rugi", `Rp ${Number(laporanData.laba).toLocaleString('id-ID')} (${laporanData.laba >= 0 ? 'Untung' : 'Rugi'})`]);
 			aoa.push([]);
-			// Header
-			aoa.push(["Tanggal", "Waktu", "Jenis", "Keterangan", "Jumlah", "Oleh"]);
-			// Data rows
+			// Header (added Kategori after Jenis)
+			aoa.push(["Tanggal", "Jam", "Jenis", "Kategori", "Keterangan", "Jumlah", "Ditambahkan Oleh"]);
+			// Data rows (include Kategori column)
 			(sortedTransaksi || []).forEach(item => {
 				const tanggal = item.tanggal ? (new Date(item.tanggal)).toLocaleDateString('id-ID') : '-';
 				const waktu = formatTime(item.waktu || '-');
 				const jenisRaw = item.jenis || '-';
 				const jenis = jenisRaw ? (jenisRaw.charAt(0).toUpperCase() + jenisRaw.slice(1)) : '-';
+				const kategori = jenisRaw === 'pengeluaran' ? (item.kategori_pengeluaran || '-') : '-';
 				const keterangan = jenisRaw === 'pemasukan'
 					? ((item.sumber && item.sumber.toString().trim() && item.sumber.toString().toLowerCase() !== 'manual')
 						? item.sumber
@@ -210,11 +320,24 @@ function LaporanBulananPemilik() {
 					: (item.keterangan || '-');
 				const amount = item.jumlah ?? item.nominal ?? item.total ?? 0;
 				const oleh = item.ditambahkan_oleh || '-';
-				aoa.push([tanggal, waktu, jenis, keterangan, `Rp ${Number(amount).toLocaleString('id-ID')}`, oleh]);
+				aoa.push([tanggal, waktu, jenis, kategori, keterangan, `Rp ${Number(amount).toLocaleString('id-ID')}`, oleh]);
 			});
-			// Printed date row
+			const kategoriSummaryMapExcel = (sortedTransaksi || []).reduce((acc, item) => {
+				if (item?.jenis !== 'pengeluaran') return acc;
+				const kategoriNama = String(item.kategori_pengeluaran || '').trim();
+				if (!kategoriNama) return acc;
+				const amount = Number(item.jumlah ?? item.nominal ?? item.total ?? 0);
+				acc[kategoriNama] = (acc[kategoriNama] || 0) + amount;
+				return acc;
+			}, {});
+			const kategoriSummaryRowsExcel = Object.entries(kategoriSummaryMapExcel).map(([kategori, total]) => [kategori, `Rp ${Number(total).toLocaleString('id-ID')}`]);
 			aoa.push([]);
-			aoa.push(['', '', '', '', `Dicetak: ${new Date().toLocaleDateString('id-ID')}`]);
+			aoa.push(["Ringkasan Pengeluaran Berdasarkan Kategori"]);
+			aoa.push(["Kategori", "Total Pengeluaran"]);
+			kategoriSummaryRowsExcel.forEach(row => aoa.push(row));
+			// Printed date row (align to last column)
+			aoa.push([]);
+			aoa.push(['', '', '', '', '', '', `Dicetak: ${new Date().toLocaleDateString('id-ID')}`]);
 			const ws = XLSX.utils.aoa_to_sheet(aoa);
 			// Column widths
 			do {
@@ -222,6 +345,7 @@ function LaporanBulananPemilik() {
 					{ wch: 12 }, // Tanggal
 					{ wch: 10 }, // Waktu
 					{ wch: 14 }, // Jenis
+					{ wch: 12 }, // Kategori
 					{ wch: 20 }, // Keterangan
 					{ wch: 16 }, // Jumlah
 					{ wch: 10 }, // Oleh
@@ -230,7 +354,7 @@ function LaporanBulananPemilik() {
 			// Bold header row (may be ignored by some XLSX consumers)
 			const headerRowNumber = aoa.findIndex(row => row[0] === 'Tanggal') + 1;
 			if (headerRowNumber > 0) {
-				const cols = ['A','B','C','D','E','F'];
+				const cols = ['A','B','C','D','E','F','G'];
 				cols.forEach(col => {
 					const cell = ws[`${col}${headerRowNumber}`];
 					if (cell) cell.s = { font: { bold: true } };
@@ -285,6 +409,9 @@ function LaporanBulananPemilik() {
 		};
 
 		const sortedTransaksi = rawTransaksi.slice().sort((a, b) => getTimestamp(b) - getTimestamp(a));
+		const sortedMenuSalesBulanan = [...menuSalesBulanan].sort((a, b) => Number(b.quantity) - Number(a.quantity));
+		const topMenuSalesBulanan = sortedMenuSalesBulanan.slice(0, 5);
+		const maxMenuQuantityBulanan = topMenuSalesBulanan.reduce((max, item) => Math.max(max, Number(item.quantity) || 0), 0);
 
 		const pemasukanTransaksi = rawTransaksi.filter(t => t.jenis === 'pemasukan').length;
 		const pengeluaranTransaksi = rawTransaksi.filter(t => t.jenis === 'pengeluaran').length;
@@ -397,6 +524,81 @@ function LaporanBulananPemilik() {
 					{/* Grafik: di bawah summary card, judul di luar kotak seperti Dashboard */}
 					<div className="laporan-table-title">Grafik Pemasukan & Pengeluaran</div>
 					<GrafikLaporan bulan={`${tahun}-${bulan}`} showHeader={false} />
+					{/* New: Pengeluaran per kategori */}
+					<div className="laporan-table-title">Grafik Pengeluaran Berdasarkan Kategori</div>
+					<div className="kategori-chart-card">
+						<div className="kategori-chart-inner">
+							<ResponsiveContainer width="100%" height="100%">
+								<BarChart data={pengeluaranKategori} margin={{ top: 12, right: 20, left: 0, bottom: 8 }}>
+								<CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#e8e8e8" />
+								<XAxis dataKey="kategori" tick={{ fill: '#475569', fontSize: 12 }} axisLine={false} tickLine={false} interval={0} dy={10} />
+								<YAxis tickFormatter={(v) => `Rp ${Number(v).toLocaleString('id-ID')}`} tick={{ fill: '#475569', fontSize: 12 }} axisLine={false} tickLine={false} width={90} />
+								<Tooltip formatter={(value) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits:0 }).format(value)} cursor={{ fill: 'rgba(0,0,0,0.04)' }} />
+								<Legend verticalAlign="bottom" />
+								<Bar dataKey="total" name="Total Pengeluaran" fill="#dc2626" radius={[8,8,0,0]} barSize={36}>
+									<LabelList dataKey="total" position="top" formatter={(value) => new Intl.NumberFormat('id-ID').format(value)} fill="#991b1b" style={{ fontSize: 12, fontWeight: 700 }} />
+								</Bar>
+							</BarChart>
+							</ResponsiveContainer>
+						</div>
+					</div>
+					<div className="menu-sales-section">
+						<div className="laporan-table-title">STATISTIK MENU TERLARIS BULAN INI</div>
+						<div className="menu-sales-card">
+							<div className="menu-sales-card-header">
+								<div className="sales-filter-field sales-filter-inline">
+									<label htmlFor="menu-bulanan-filter">Filter</label>
+									<select
+										id="menu-bulanan-filter"
+										className="sales-filter-select"
+										value={menuFilterBulanan}
+										onChange={(e) => setMenuFilterBulanan(e.target.value)}
+									>
+										{menuOptionsBulanan.map((option) => (
+											<option key={option} value={option}>{option}</option>
+										))}
+									</select>
+								</div>
+							</div>
+							<div className="sales-chart-body">
+								{menuLoadingBulanan ? (
+									<div className="sales-no-data">Loading statistik penjualan...</div>
+								) : menuErrorBulanan ? (
+									<div className="sales-no-data" style={{ color: 'red' }}>Error: {menuErrorBulanan}</div>
+								) : topMenuSalesBulanan.length === 0 ? (
+									<div className="sales-no-data">Belum ada data penjualan.</div>
+								) : (
+									<div className="menu-sales-card-list">
+										{topMenuSalesBulanan.map((item, idx) => {
+											const quantity = Number(item.quantity) || 0;
+											const widthPercent = maxMenuQuantityBulanan ? Math.round((quantity / maxMenuQuantityBulanan) * 100) : 0;
+										const menuIcon = item.icon || item.emoji || '🍽️';
+										return (
+											<div className="menu-sales-item" key={`${item.menu || 'menu'}-${idx}`}>
+												<div className="menu-sales-item-heading">
+													<div className="menu-sales-item-title">
+														<span className="menu-sales-item-icon">
+															{typeof menuIcon === 'string' && (menuIcon.startsWith('http') || menuIcon.startsWith('/') || menuIcon.startsWith('data:')) ? (
+																<img src={menuIcon.startsWith('/') ? `${API}${menuIcon}` : menuIcon} alt={item.menu || 'Menu'} />
+															) : (
+																menuIcon || '🍽️'
+															)}
+														</span>
+														<span className="menu-sales-item-label">{item.menu || 'Menu'}</span>
+													</div>
+														<div className="menu-sales-item-value">{new Intl.NumberFormat('id-ID').format(quantity)}</div>
+													</div>
+													<div className="menu-sales-item-bar-wrap">
+														<div className="menu-sales-item-bar" style={{ width: `${widthPercent}%` }} />
+													</div>
+												</div>
+											);
+										})}
+									</div>
+								)}
+							</div>
+						</div>
+					</div>
 					<div>
 						<div className="laporan-table-title">DETAIL TRANSAKSI - {bulanNames[parseInt(bulan) - 1]} {tahun}</div>
 						<div className="owner-laporan-table-box">
@@ -407,7 +609,8 @@ function LaporanBulananPemilik() {
 										<th>Tanggal</th>
 										<th>Jam</th>
 										<th>Jenis</th>
-										<th>Sumber/Keterangan</th>
+										<th>Kategori</th>
+										<th>Keterangan</th>
 										<th>Jumlah</th>
 										<th>Ditambahkan oleh</th>
 									</tr>
@@ -432,21 +635,23 @@ function LaporanBulananPemilik() {
 												<tr key={idx}>
 														<td>{parseDate(item.tanggal)}</td>
 														<td>{formatTime(item.waktu)}</td>
-														<td><span className={item.jenis === "pemasukan" ? "laporan-badge pemasukan" : "laporan-badge pengeluaran"}>{item.jenis}</span></td>
-														<td>{item.jenis === "pemasukan"
-															? ((item.sumber && item.sumber !== 'owner' && item.sumber.toString().toLowerCase() !== 'manual') ? item.sumber : (item.keterangan || '-'))
-															: (item.keterangan || '-')
-														}</td>
-														<td>{formatCurrency(amount)}</td>
-														<td>
-															<span className={`laporan-badge ${getBadgeClass(item.ditambahkan_oleh)}`}>
-  																{item.ditambahkan_oleh === 'owner' ? 'pemilik' : item.ditambahkan_oleh}</span></td>
+												<td><span className={item.jenis === "pemasukan" ? "laporan-badge pemasukan" : "laporan-badge pengeluaran"}>{item.jenis}</span></td>
+												<td>{item.jenis === 'pengeluaran' ? (item.kategori_pengeluaran || '-') : '-'}</td>
+												<td>{item.jenis === "pemasukan"
+													? ((item.sumber && item.sumber !== 'owner' && item.sumber.toString().toLowerCase() !== 'manual') ? item.sumber : (item.keterangan || '-'))
+													: (item.keterangan || '-')
+												}</td>
+												<td>{formatCurrency(amount)}</td>
+												<td>
+													<span className={`laporan-badge ${getBadgeClass(item.ditambahkan_oleh)}`}>
+														{item.ditambahkan_oleh === 'owner' ? 'pemilik' : item.ditambahkan_oleh}</span>
+												</td>
 												</tr>
 											)
 										})
 									) : (
 										<tr>
-											<td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>
+											<td colSpan="7" style={{ textAlign: 'center', padding: '20px' }}>
 												Tidak Ada Transaksi Untuk Bulan Ini
 											</td>
 										</tr>

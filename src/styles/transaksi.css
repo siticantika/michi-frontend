@@ -3,6 +3,7 @@
   font-family: 'Poppins', Arial, sans-serif;
   background: #fff5f7;
   min-height: 100vh;
+  overflow: hidden;
 }
 
 /* ============ HEADER ============ */
@@ -44,6 +45,8 @@
   align-items: stretch;
   padding: 0 0 40px;
   padding-bottom: 60px;
+  height: calc(100vh - 80px);
+  overflow: hidden;
 }
 
 .transaksi-title {
@@ -67,6 +70,9 @@
   width: 94%;
   max-width: 1500px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 /* Ensure owner-style summary cards on transaksi page have equal widths and are responsive */
@@ -74,8 +80,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* keep 3 columns on all sizes including HP */
   gap: 24px;
-  align-items: stretch;
-}
+  align-items: stretch;  margin-bottom: 22px;}
 
 /* Keep owner summary at 3 columns on narrower screens per request (do not change desktop layout) */
 @media (max-width: 1400px) {
@@ -159,7 +164,8 @@
 
 /* ============ SCROLL — HANYA AREA KARTU ============ */
 .transaksi-scroll {
-  max-height: 420px;   /* atur tinggi sesuai kebutuhan */
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
   padding-right: 4px;
   padding-bottom: 40px; /* agar item terakhir punya ruang di bawah */
@@ -167,7 +173,7 @@
   /* scrollbar tipis biar rapi */
   scrollbar-width: thin;
   scrollbar-color: #ffb347 #fff0e6;
-   scroll-behavior: smooth;
+  scroll-behavior: smooth;
 }
 
 .transaksi-scroll::-webkit-scrollbar {
@@ -192,8 +198,8 @@
 .transaksi-card-list {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding-top: 10px;
+  gap: 14px;
+  padding-top: 0;
 }
 
 /* RESPONSIVE: convert card list to a responsive grid on narrower screens
@@ -300,13 +306,41 @@
 .card-top-left .transaksi-title { font-weight:700; color: #4a3c2a; font-size:1.05rem; margin:0; line-height:3; }
 
 .transaksi-done-toggle { display:flex; align-items:center; gap:6px; margin-left:8px; font-size:0.9rem; color:#6b7280; cursor:pointer; }
-.transaksi-done-toggle input { width:16px; height:16px; }
+.transaksi-done-toggle input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2px solid #b7c4b1;
+  background: #fff;
+  display: inline-grid;
+  place-items: center;
+  cursor: pointer;
+  position: relative;
+}
+.transaksi-done-toggle input::after {
+  content: '✓';
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  opacity: 0;
+  transform: scale(0.7);
+}
+.transaksi-done-toggle input:checked {
+  background: #22c55e;
+  border-color: #22c55e;
+}
+.transaksi-done-toggle input:checked::after {
+  opacity: 1;
+  transform: scale(1);
+}
 .transaksi-done-toggle .done-label { color:#6b7280; }
 .transaksi-done-toggle input:checked + .done-label { color:#16a34a; font-weight:700; }
 
 /* completed card visual */
 .transaksi-card.completed { border-color: #bbf7d0; background: linear-gradient(180deg, #fff, #f7fff7); }
-.transaksi-card.completed .done-label { color:#16a34a; }
+.transaksi-card.completed .transaksi-done-toggle .done-label { color:#16a34a; }
 
 /* item name + qty spacing */
 .name-line { display:flex; align-items:center; gap:1px; }
@@ -625,6 +659,31 @@
   margin-bottom: 40px;
 }
 
+.transaksi-filter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin: 0 0 12px;
+}
+
+.transaksi-filter select {
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: 1px solid #f1c9a6;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #7a4b2f;
+  cursor: pointer;
+  background: #fff6ef;
+  outline: none;
+  min-width: 180px;
+}
+
+.transaksi-filter select:focus {
+  border-color: #ff8a5b;
+  box-shadow: 0 0 0 3px rgba(255, 138, 91, 0.18);
+}
+
 /* responsive tweak: when narrow, pendapatan goes above summary */
 @media (max-width: 900px) {
   .summary-stats {
@@ -654,6 +713,10 @@
 @media (max-width: 700px) {
   .summary-stats {
     grid-template-columns: 1fr;
+  }
+  .transaksi-main {
+    height: auto;
+    overflow: visible;
   }
   .transaksi-wrapper {
     width: 96%;

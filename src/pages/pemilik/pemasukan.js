@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/PengeluaranPemilik.css";
-import "../../styles/DashboardPemilik.css";
 import NavbarPemilik from "../../components/NavbarPemilik";
 
 function PemasukanPemilik() {
 	const API = process.env.REACT_APP_API_URL;
 	const navigate = useNavigate();
+	const HIDE_OWNER_PEMASUKAN = true;
 	const [showPopup, setShowPopup] = useState(false);
 	const [pemasukanList, setPemasukanList] = useState([]);
 	const [form, setForm] = useState({
@@ -16,11 +16,15 @@ function PemasukanPemilik() {
 		jumlah: ""
 	});
 
-	// Saat halaman pertama kali dibuka, sistem mengambil data pemasukan hari ini dari backend.
-	// Tujuannya agar owner bisa melihat catatan pemasukan secara langsung tanpa refresh manual.
+	// Tampilan halaman pemasukan owner disembunyikan karena sistem sudah memakai transaksi kasir sebagai sumber pemasukan.
+	// Kode tetap disimpan agar bisa diaktifkan kembali nanti tanpa perlu menulis ulang.
 	useEffect(() => {
+		if (HIDE_OWNER_PEMASUKAN) {
+			navigate('/pemilik/dashboard', { replace: true });
+			return;
+		}
 		fetchPemasukan();
-	}, []);
+	}, [navigate, HIDE_OWNER_PEMASUKAN]);
 
 	// Fungsi ini mengambil data pemasukan dari API dan menyimpannya ke state agar tampil di halaman.
 	// Data ini nantinya dipakai untuk menghitung total pemasukan dan menampilkan tabel.
@@ -93,12 +97,14 @@ function PemasukanPemilik() {
 		return t.length >= 5 ? t.substring(0,5) : t;
 	};
 
+	if (HIDE_OWNER_PEMASUKAN) return null;
+
 	return (
 		<div className="pemasukan-owner-bg">
 			<header className="dashboard-header">
 				<div className="logo-section">
 					<img src="/logimichi.jpg" alt="Logo Michi" className="logo-img" />
-					<span className="logo-title">OWNER MICHI</span>
+					<span className="logo-title">PEMILIK MICHI</span>
 				</div>
 				<NavbarPemilik />
 			</header>

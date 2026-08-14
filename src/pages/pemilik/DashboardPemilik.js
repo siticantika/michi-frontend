@@ -12,17 +12,28 @@ function DashboardPemilik() {
     laba: 0,
     transaksi: []
   });
+  const [menuSales, setMenuSales] = useState([]);
+  const [menuOptions, setMenuOptions] = useState(['Semua']);
+  const [menuFilter, setMenuFilter] = useState('Semua');
+  const [menuLoading, setMenuLoading] = useState(true);
+  const [menuError, setMenuError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchDashboardData();
-    
+
     // Auto refresh setiap 30 detik
-    const interval = setInterval(fetchDashboardData, 30000);
-    
-    return () => clearInterval(interval);
+    const dashboardInterval = setInterval(fetchDashboardData, 30000);
+    return () => clearInterval(dashboardInterval);
   }, []);
+
+  useEffect(() => {
+    fetchMenuSales(menuFilter);
+
+    const menuInterval = setInterval(() => fetchMenuSales(menuFilter), 30000);
+    return () => clearInterval(menuInterval);
+  }, [menuFilter]);
 
   // Bagian ini mengambil data dashboard owner dari backend.
   // Data yang diterima nanti dipakai untuk menampilkan total pemasukan, pengeluaran, laba, dan daftar transaksi.
@@ -50,6 +61,41 @@ function DashboardPemilik() {
       console.error('Error fetching dashboard data:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchMenuSales = async (filter = menuFilter) => {
+    try {
+      setMenuLoading(true);
+      setMenuError(null);
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API}/api/owner/grafik-penjualan-menu-hari-ini?filter=${encodeURIComponent(filter)}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch menu sales data');
+      }
+
+      const data = await response.json();
+      setMenuSales(data.data || []);
+      if (Array.isArray(data.options) && data.options.length > 0) {
+        const normalizedOptions = data.options;
+        setMenuOptions(normalizedOptions);
+
+        if (!normalizedOptions.includes(filter) && filter !== 'Semua') {
+          setMenuFilter('Semua');
+        }
+      } else {
+        setMenuOptions(['Semua']);
+      }
+    } catch (err) {
+      setMenuError(err.message);
+      console.error('Error fetching menu sales data:', err);
+    } finally {
+      setMenuLoading(false);
     }
   };
 
@@ -81,6 +127,9 @@ function DashboardPemilik() {
   const pengeluaranCount = dashboardData.transaksi.filter(t => t.jenis === 'pengeluaran').length;
   const labaValue = Number(dashboardData.laba) || 0;
   const labaLabel = labaValue >= 0 ? 'Untung' : 'Rugi';
+  const sortedMenuSales = [...menuSales].sort((a, b) => Number(b.quantity) - Number(a.quantity));
+  const topMenuSales = sortedMenuSales.slice(0, 5);
+  const maxMenuQuantity = topMenuSales.reduce((max, item) => Math.max(max, Number(item.quantity) || 0), 0);
 
   if (loading) {
     return (
@@ -151,51 +200,115 @@ function DashboardPemilik() {
                 </div>
               </div>
             </div>
-            <div className="laporan-table-title">Transaksi Hari Ini</div>
-        <div className="owner-laporan-table-box">
-  <div className="laporan-table-wrapper">
-    <table className="laporan-table">
-      <thead>
-        <tr>
-          <th>Jam</th>
-          <th>Jenis</th>
-          <th>Sumber/Keterangan</th>
-          <th>Jumlah</th>
-          <th>Ditambahkan oleh</th>
-        </tr>
-      </thead>
-<tbody>
-  {dashboardData.transaksi.length > 0 ? (
-    dashboardData.transaksi.map((item, index) => (
-      <tr key={index}>
-        <td>{formatTime(item.waktu)}</td>
-        <td>{item.jenis}</td>
-        <td>
-          {item.jenis === "pemasukan"
-            ? ((item.sumber && item.sumber !== 'owner' && item.sumber !== 'manual') 
-                ? item.sumber 
-                : (item.keterangan || '-'))
-            : (item.keterangan || '-')}
-        </td>
-        <td>{formatCurrency(item.jumlah)}</td>
-        <td>
-          <span className={`laporan-badge ${item.ditambahkan_oleh === 'owner' ? 'owner' : item.ditambahkan_oleh}`}>
-            {item.ditambahkan_oleh === 'owner' ? 'pemilik' : item.ditambahkan_oleh}
-          </span>
-        </td>
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td colSpan="5" style={{ textAlign: 'center', padding: '20px' }}>
-        Belum Ada Transaksi Hari Ini
-      </td>
-    </tr>
-  )}
-</tbody>
-    </table>
-  </div>
-</div>
+
+            <div className="dashboard-scroll-content">
+              <div className="menu-sales-section">
+                <div className="laporan-table-title">STATISTIK MENU TERLARIS HARI INI</div>
+                <div className="menu-sales-card">
+                  <div className="menu-sales-card-header">
+                    <div className="sales-filter-field sales-filter-inline">
+                      <label htmlFor="menu-filter">Filter</label>
+                      <select
+                        id="menu-filter"
+                        className="sales-filter-select"
+                        value={menuFilter}
+                        onChange={(e) => setMenuFilter(e.target.value)}
+                      >
+                        {menuOptions.map((option) => (
+                          <option key={option} value={option}>{option}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="sales-chart-body">
+                    {menuLoading ? (
+                      <div className="sales-no-data">Loading statistik penjualan...</div>
+                    ) : menuError ? (
+                      <div className="sales-no-data" style={{ color: 'red' }}>Error: {menuError}</div>
+                    ) : topMenuSales.length === 0 ? (
+                      <div className="sales-no-data">Belum ada data penjualan.</div>
+                    ) : (
+                      <div className="menu-sales-card-list">
+                        {topMenuSales.map((item, idx) => {
+                          const quantity = Number(item.quantity) || 0;
+                          const widthPercent = maxMenuQuantity ? Math.round((quantity / maxMenuQuantity) * 100) : 0;
+                          const menuIcon = item.icon || item.emoji || '🍽️';
+
+                          return (
+                            <div className="menu-sales-item" key={`${item.menu || 'menu'}-${idx}`}>
+                              <div className="menu-sales-item-heading">
+                                <div className="menu-sales-item-title">
+                                  <span className="menu-sales-item-icon">
+                                    {typeof menuIcon === 'string' && (menuIcon.startsWith('http') || menuIcon.startsWith('/') || menuIcon.startsWith('data:')) ? (
+                                      <img src={menuIcon.startsWith('/') ? `${API}${menuIcon}` : menuIcon} alt={item.menu || 'Menu'} />
+                                    ) : (
+                                      menuIcon || '🍽️'
+                                    )}
+                                  </span>
+                                  <span className="menu-sales-item-label">{item.menu || 'Menu'}</span>
+                                </div>
+                                <div className="menu-sales-item-value">{new Intl.NumberFormat('id-ID').format(quantity)}</div>
+                              </div>
+                              <div className="menu-sales-item-bar-wrap">
+                                <div className="menu-sales-item-bar" style={{ width: `${widthPercent}%` }} />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="laporan-table-title">Transaksi Hari Ini</div>
+              <div className="owner-laporan-table-box">
+                <div className="laporan-table-wrapper">
+                  <table className="laporan-table">
+                    <thead>
+                      <tr>
+                        <th>Jam</th>
+                        <th>Jenis</th>
+                        <th>Kategori</th>
+                        <th>Keterangan</th>
+                        <th>Jumlah</th>
+                        <th>Ditambahkan oleh</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {dashboardData.transaksi.length > 0 ? (
+                        dashboardData.transaksi.map((item, index) => (
+                          <tr key={index}>
+                            <td>{formatTime(item.waktu)}</td>
+                            <td>{item.jenis}</td>
+                            <td>{item.jenis === 'pengeluaran' ? (item.kategori_pengeluaran || '-') : '-'}</td>
+                            <td>
+                              {item.jenis === "pemasukan"
+                                ? ((item.sumber && item.sumber !== 'owner' && item.sumber !== 'manual')
+                                    ? item.sumber
+                                    : (item.keterangan || '-'))
+                                : (item.keterangan || '-')}
+                            </td>
+                            <td>{formatCurrency(item.jumlah)}</td>
+                            <td>
+                              <span className={`laporan-badge ${item.ditambahkan_oleh === 'owner' ? 'owner' : item.ditambahkan_oleh}`}>
+                                {item.ditambahkan_oleh === 'owner' ? 'pemilik' : item.ditambahkan_oleh}
+                              </span>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>
+                            Belum Ada Transaksi Hari Ini
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </main>
