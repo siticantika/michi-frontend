@@ -138,6 +138,14 @@ const handlePayNow = async (e) => {
     formData.append("metode", paymentMethod);
     formData.append("jenis_harga", jenisHarga);
 
+    // sertakan tanggal dan waktu lokal klien supaya yang tersimpan sesuai waktu input
+    const now = new Date();
+    const pad = n => n.toString().padStart(2, '0');
+    const tanggalClient = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+    const waktuClient = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    formData.append('tanggal', tanggalClient);
+    formData.append('waktu', waktuClient);
+
     formData.append(
       "items",
       JSON.stringify(
