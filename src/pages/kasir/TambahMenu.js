@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Picker from 'emoji-picker-react';
 // import { useMenu } from '../../context/MenuContext';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/TambahMenu.css';
@@ -413,10 +414,10 @@ const handleSubmit = async (e) => {
                     <button type="button" className="popup-emoji-btn" onClick={() => setShowEmojiPicker(s => !s)} style={{padding:'8px 10px', borderRadius:8, border:'1px solid #ffd6a5', background:'#fff'}} aria-label="Pilih emoji">🙂</button>
                   </div>
                   {showEmojiPicker && (
-                    <div style={{display:'flex',flexWrap:'wrap',gap:8,marginTop:8,padding:8,background:'#fffaf5',border:'1px solid #ffd6a5',borderRadius:8,maxWidth:420}}>
-                      {['🍗','🍜','🍢','🍔','🍟','🍕','🍖','🥤','🍽️','🥗','🌶️','🍳','🍛','🍚','🧋','☕','🍩','🍪','🍰','🍱'].map((em) => (
-                        <button key={em} type="button" onClick={() => { setAddForm(f => ({...f, emoji: em})); setShowEmojiPicker(false); }} style={{fontSize:20,padding:6,borderRadius:6,border:'none',background:'transparent',cursor:'pointer'}}>{em}</button>
-                      ))}
+                    <div style={{position:'relative',marginTop:8}}>
+                      <div style={{position:'absolute',zIndex:9999}}>
+                        <Picker onEmojiClick={(emojiData, evt) => { setAddForm(f => ({...f, emoji: emojiData.emoji})); setShowEmojiPicker(false); }} />
+                      </div>
                     </div>
                   )}
                   <label>Harga Outlet</label><input type="number" className="popup-input" value={addForm.harga_outlet} onChange={e=>setAddForm(f=>({...f,harga_outlet:e.target.value}))} />
@@ -495,10 +496,10 @@ const handleSubmit = async (e) => {
                     <button type="button" className="popup-emoji-btn" onClick={() => setShowEditEmojiPicker(s => !s)} style={{padding:'8px 10px', borderRadius:8, border:'1px solid #ffd6a5', background:'#fff'}} aria-label="Pilih emoji">🙂</button>
                   </div>
                   {showEditEmojiPicker && (
-                    <div style={{display:'flex',flexWrap:'wrap',gap:8,marginTop:8,padding:8,background:'#fffaf5',border:'1px solid #ffd6a5',borderRadius:8,maxWidth:420}}>
-                      {['🍗','🍜','🍢','🍔','🍟','🍕','🍖','🥤','🍽️','🥗','🌶️','🍳','🍛','🍚','🧋','☕','🍩','🍪','🍰','🍱'].map((em) => (
-                        <button key={em} type="button" onClick={() => { handleEditChange({ target: { name: 'emoji', value: em } }); setShowEditEmojiPicker(false); }} style={{fontSize:20,padding:6,borderRadius:6,border:'none',background:'transparent',cursor:'pointer'}}>{em}</button>
-                      ))}
+                    <div style={{position:'relative',marginTop:8}}>
+                      <div style={{position:'absolute',zIndex:9999}}>
+                        <Picker onEmojiClick={(emojiData, evt) => { handleEditChange({ target: { name: 'emoji', value: emojiData.emoji } }); setShowEditEmojiPicker(false); }} />
+                      </div>
                     </div>
                   )}
                   <label>Nama Menu</label>
