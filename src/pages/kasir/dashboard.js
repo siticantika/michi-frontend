@@ -119,6 +119,13 @@ function Dashboard() {
 const handlePayNow = async (e) => {
   e.preventDefault();
 
+  // Jika metode pembayaran Qris dipilih tetapi bukti belum diupload,
+  // tampilkan pesan dan batalkan proses checkout.
+  if (paymentMethod === 'qris' && !qrisFile) {
+    alert('Masukkan bukti qris');
+    return;
+  }
+
   try {
     const token = localStorage.getItem('token');
     const formData = new FormData();
