@@ -26,6 +26,16 @@ function Pengeluaran() {
             ? data.data
             : [];
 
+        // Pastikan daftar pengeluaran diurutkan sehingga item terbaru berada di paling atas
+        normalized.sort((a, b) => {
+          try {
+            const ta = a.tanggal && a.waktu ? new Date(`${a.tanggal}T${a.waktu}`) : new Date(0);
+            const tb = b.tanggal && b.waktu ? new Date(`${b.tanggal}T${b.waktu}`) : new Date(0);
+            return tb - ta; // descending: terbaru dulu
+          } catch (e) {
+            return 0;
+          }
+        });
         setPengeluaranList(normalized);
 
         const categories = Array.from(
