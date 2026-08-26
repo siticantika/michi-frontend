@@ -62,7 +62,15 @@ function Pengeluaran() {
   const handleSubmit = async e => {
     e.preventDefault();
     const finalCategory = getFinalCategory();
-    if (!form.keterangan || !form.jumlah || !finalCategory) return;
+    // Validasi: keterangan dan jumlah wajib diisi, serta salah satu kategori (ada atau baru)
+    const keteranganValid = (form.keterangan || '').toString().trim() !== '';
+    const jumlahValid = form.jumlah !== '' && !isNaN(Number(form.jumlah)) && Number(form.jumlah) > 0;
+    const kategoriValid = finalCategory && finalCategory.trim() !== '';
+
+    if (!keteranganValid || !jumlahValid || !kategoriValid) {
+      alert('Lengkapi data pengeluaran');
+      return;
+    }
 
     try {
       const response = await fetch(`${API}/api/pengeluaran`, {
