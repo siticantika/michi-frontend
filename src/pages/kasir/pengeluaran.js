@@ -13,6 +13,7 @@ function Pengeluaran() {
   const [showPopup, setShowPopup] = useState(false);
   const [form, setForm] = useState({ keterangan: '', kategori_pengeluaran: '', kategori_baru: '', jumlah: '' });
   const [categoryOptions, setCategoryOptions] = useState(defaultCategoryOptions);
+  const [errorMsg, setErrorMsg] = useState('');
 
   // Bagian ini mengambil daftar pengeluaran dari backend saat halaman dibuka.
   useEffect(() => {
@@ -51,6 +52,7 @@ function Pengeluaran() {
   const handleChange = e => {
     const { name, value } = e.target;
     setForm(f => ({ ...f, [name]: value }));
+    if (errorMsg) setErrorMsg('');
   };
 
   const getFinalCategory = () => {
@@ -68,7 +70,7 @@ function Pengeluaran() {
     const kategoriValid = finalCategory && finalCategory.trim() !== '';
 
     if (!keteranganValid || !jumlahValid || !kategoriValid) {
-      alert('Lengkapi data pengeluaran');
+      setErrorMsg('Lengkapi data pengeluaran');
       return;
     }
 
@@ -100,6 +102,7 @@ function Pengeluaran() {
 
       setForm({ keterangan: '', kategori_pengeluaran: '', kategori_baru: '', jumlah: '' });
       setShowPopup(false);
+      setErrorMsg('');
 
     } catch (err) {
       console.error('Gagal simpan pengeluaran:', err);
@@ -110,7 +113,13 @@ function Pengeluaran() {
   // Fungsi ini memformat waktu agar tampil lebih ringkas di tampilan daftar pengeluaran.
   const formatWaktu = (waktu) => {
     if (!waktu) return '';
-    return waktu.slice(0, 5);
+    // jika format 'HH:MM:SS' atau 'HH:MM', ambil HH:MM
+    const m = waktu.toString().match(/(\d{2}:\d{2})(?::\d{2})?/);
+    if (m) return m[1];
+    // fallback: coba parse sebagai Date
+    const d = new Date(waktu);
+    if (!isNaN(d)) return d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    return '';
   };
 
   return (
@@ -150,7 +159,7 @@ function Pengeluaran() {
               </div>
 
               <div className="stat-add-box">
-                <button className="pengeluaran-add-btn" onClick={() => { setForm({ keterangan: '', kategori_pengeluaran: '', kategori_baru: '', jumlah: '' }); setShowPopup(true); }}>
+                <button className="pengeluaran-add-btn" onClick={() => { setForm({ keterangan: '', kategori_pengeluaran: '', kategori_baru: '', jumlah: '' }); setErrorMsg(''); setShowPopup(true); }}>
                   + Tambah Pengeluaran
                 </button>
               </div>
@@ -197,7 +206,7 @@ function Pengeluaran() {
           <div className="pemasukan-popup">
             <div className="pemasukan-popup-header">
               <span className="pemasukan-popup-title">Tambahkan Pengeluaran Baru</span>
-              <button className="pemasukan-popup-close" onClick={() => setShowPopup(false)}>✕</button>
+              <button className="pemasukan-popup-close" onClick={() => { setShowPopup(false); setErrorMsg(''); }}>✕</button>
             </div>
 
             <form className="pemasukan-popup-form" onSubmit={handleSubmit}>
@@ -238,6 +247,9 @@ function Pengeluaran() {
                 <input type="number" name="jumlah" placeholder="Contoh: 50000" value={form.jumlah} onChange={handleChange} className="pemasukan-popup-input" />
               </div>
 
+              {errorMsg && (
+                <div style={{ color: '#b00020', fontWeight: 700, marginTop: 4 }}>{errorMsg}</div>
+              )}
               <button type="submit" className="pemasukan-popup-btn">💾 Simpan Pengeluaran</button>
             </form>
           </div>
