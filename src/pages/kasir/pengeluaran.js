@@ -75,6 +75,10 @@ function Pengeluaran() {
     }
 
     try {
+      // sertakan waktu lokal klien supaya jam yang tersimpan sama dengan waktu input
+      const nowClient = new Date();
+      const padClient = n => n.toString().padStart(2, '0');
+      const waktuClient = `${padClient(nowClient.getHours())}:${padClient(nowClient.getMinutes())}:${padClient(nowClient.getSeconds())}`;
       const response = await fetch(`${API}/api/pengeluaran`, {
         method: 'POST',
         headers: { 
@@ -84,7 +88,8 @@ function Pengeluaran() {
         body: JSON.stringify({
           keterangan: form.keterangan,
           jumlah: Number(form.jumlah),
-          kategori_pengeluaran: finalCategory
+          kategori_pengeluaran: finalCategory,
+          waktu: waktuClient
         })
       });
 
