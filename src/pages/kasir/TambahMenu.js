@@ -78,6 +78,8 @@ function TambahMenu() {
   const [levelInput, setLevelInput] = useState('');
   const [showVarian, setShowVarian] = useState(false);
   const [showLevel, setShowLevel] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showEditEmojiPicker, setShowEditEmojiPicker] = useState(false);
   const [activeType, setActiveType] = useState('makanan');
   const [search, setSearch] = useState('');
   const [editMenuIdx, setEditMenuIdx] = useState(null);
@@ -406,7 +408,17 @@ const handleSubmit = async (e) => {
                   <label>Nama Menu</label>
                   <input type="text" className="popup-input" value={addForm.nama} onChange={e => setAddForm(f => ({...f, nama: e.target.value}))} />
                   <label>Emoji Icon</label>
-                  <input type="text" className="popup-input" value={addForm.emoji} onChange={e => setAddForm(f => ({...f, emoji: e.target.value}))} />
+                  <div style={{display:'flex', alignItems:'center', gap:8}}>
+                    <input type="text" className="popup-input" style={{flex:1}} value={addForm.emoji} onChange={e => setAddForm(f => ({...f, emoji: e.target.value}))} />
+                    <button type="button" className="popup-emoji-btn" onClick={() => setShowEmojiPicker(s => !s)} style={{padding:'8px 10px', borderRadius:8, border:'1px solid #ffd6a5', background:'#fff'}} aria-label="Pilih emoji">🙂</button>
+                  </div>
+                  {showEmojiPicker && (
+                    <div style={{display:'flex',flexWrap:'wrap',gap:8,marginTop:8,padding:8,background:'#fffaf5',border:'1px solid #ffd6a5',borderRadius:8,maxWidth:420}}>
+                      {['🍗','🍜','🍢','🍔','🍟','🍕','🍖','🥤','🍽️','🥗','🌶️','🍳','🍛','🍚','🧋','☕','🍩','🍪','🍰','🍱'].map((em) => (
+                        <button key={em} type="button" onClick={() => { setAddForm(f => ({...f, emoji: em})); setShowEmojiPicker(false); }} style={{fontSize:20,padding:6,borderRadius:6,border:'none',background:'transparent',cursor:'pointer'}}>{em}</button>
+                      ))}
+                    </div>
+                  )}
                   <label>Harga Outlet</label><input type="number" className="popup-input" value={addForm.harga_outlet} onChange={e=>setAddForm(f=>({...f,harga_outlet:e.target.value}))} />
                   <label>Harga Grab</label><input type="number" className="popup-input" value={addForm.harga_grab} onChange={e => setAddForm(f => ({...f, harga_grab: e.target.value}))} />
                   <label>Kategori</label>
@@ -478,7 +490,17 @@ const handleSubmit = async (e) => {
               <div className="popup-menu-body">
                 <form className="popup-form" onSubmit={handleEditSubmit}>
                   <label>Icon Menu</label>
-                  <input type="text" className="popup-input" name="emoji" value={editForm.emoji} onChange={handleEditChange} />
+                  <div style={{display:'flex', alignItems:'center', gap:8}}>
+                    <input type="text" className="popup-input" name="emoji" value={editForm.emoji} onChange={handleEditChange} />
+                    <button type="button" className="popup-emoji-btn" onClick={() => setShowEditEmojiPicker(s => !s)} style={{padding:'8px 10px', borderRadius:8, border:'1px solid #ffd6a5', background:'#fff'}} aria-label="Pilih emoji">🙂</button>
+                  </div>
+                  {showEditEmojiPicker && (
+                    <div style={{display:'flex',flexWrap:'wrap',gap:8,marginTop:8,padding:8,background:'#fffaf5',border:'1px solid #ffd6a5',borderRadius:8,maxWidth:420}}>
+                      {['🍗','🍜','🍢','🍔','🍟','🍕','🍖','🥤','🍽️','🥗','🌶️','🍳','🍛','🍚','🧋','☕','🍩','🍪','🍰','🍱'].map((em) => (
+                        <button key={em} type="button" onClick={() => { handleEditChange({ target: { name: 'emoji', value: em } }); setShowEditEmojiPicker(false); }} style={{fontSize:20,padding:6,borderRadius:6,border:'none',background:'transparent',cursor:'pointer'}}>{em}</button>
+                      ))}
+                    </div>
+                  )}
                   <label>Nama Menu</label>
                   <input type="text" className="popup-input" name="nama" value={editForm.nama} onChange={handleEditChange} />
                   <label>Keterangan Menu</label>
