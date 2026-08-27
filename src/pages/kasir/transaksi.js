@@ -306,10 +306,14 @@ React.useEffect(() => {
   {/* FOOTER */}
   <div className="card-bottom">
     <div className="left card-middle">
-  {new Date(row.tanggal).toLocaleTimeString('id-ID', {
-  hour: '2-digit',
-  minute: '2-digit'
-})}
+  {row.waktu ? (
+    (row.waktu && row.waktu.length >= 5) ? row.waktu.slice(0,5) : row.waktu
+  ) : (
+    new Date(row.tanggal).toLocaleTimeString('id-ID', {
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  )}
     </div>
 
     <div className="right">
