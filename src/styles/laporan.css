@@ -305,7 +305,7 @@
 	display: flex;
 	gap: 10px;
 	align-items: center;
-	justify-content: flex-end;
+	justify-content: flex-start; /* place PDF and Download side-by-side starting at left */
 }
 .filter-card.format-card .laporan-filter-select { width: 120px; padding: 6px 8px; font-size: 0.95rem; }
 .filter-card.format-card .download-btn { flex: 0 0 auto; padding: 8px 14px; border-radius: 8px; font-size: 0.95rem; }
@@ -338,6 +338,14 @@
 	display: flex;
 	gap: 18px;
 	align-items: center;
+}
+
+.filter-card.range-card .filter-card-content {
+    flex-wrap: wrap;
+}
+.filter-card.range-card .laporan-filter-apply {
+    margin-left: 0;
+    margin-top: 6px;
 }
 .filter-card.range-card input[type="date"] {
 	padding: 8px 10px;
