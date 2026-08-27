@@ -262,13 +262,13 @@
 /* Top row: combined filter card + export card */
 .laporan-top-row {
 	display: grid;
-	/* fixed column widths to keep consistent spacing */
-	grid-template-columns: 220px 220px 400px 400px; /* year, month, range, export */
-	gap: 20px;
+	/* balanced columns: fixed filters and flexible export column to fill remaining space */
+	grid-template-columns: 220px 220px 420px minmax(240px, 1fr); /* year, month, range, export */
+	gap: 24px;
 	width: 100%;
 	max-width: 1500px;
-	margin: 0px auto 14px auto;
-	align-items: center;
+	margin: 0px auto 18px auto;
+	align-items: start;
 	box-sizing: border-box;
 }
 
@@ -291,10 +291,24 @@
 }
 .filter-card.year-card { flex: 1 1 160px; max-width: 220px; }
 .filter-card.month-card { flex: 1 1 160px; max-width: 220px; }
-.filter-card.range-card { max-width: 360px; }
-.filter-card.format-card { display: flex; flex-direction: row; align-items: center; gap: 10px; max-width: 260px; justify-content: flex-end; }
-.filter-card.format-card .laporan-filter-select { width: 120px; padding: 6px 8px; font-size: 0.9rem; }
-.filter-card.format-card .download-btn { flex: 0 0 auto; min-width: 0; padding: 8px 14px; border-radius: 8px; font-size: 0.9rem; }
+.filter-card.range-card { max-width: 420px; }
+.filter-card.format-card {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 8px;
+	max-width: 380px;
+	justify-content: center;
+}
+.filter-card.format-card .filter-card-content {
+	width: 100%;
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	justify-content: flex-end;
+}
+.filter-card.format-card .laporan-filter-select { width: 120px; padding: 6px 8px; font-size: 0.95rem; }
+.filter-card.format-card .download-btn { flex: 0 0 auto; padding: 8px 14px; border-radius: 8px; font-size: 0.95rem; }
 .download-btn {
 		padding: 8px 12px;
 		border-radius: 1px;
@@ -326,13 +340,13 @@
 	align-items: center;
 }
 .filter-card.range-card input[type="date"] {
-	padding: 6px 8px;
-	font-size: 0.9rem;
-	height: 34px;
+	padding: 8px 10px;
+	font-size: 0.95rem;
+	height: 36px;
 	border-radius: 6px;
 	border: 1px solid #f3d6d9;
 	background: #fff;
-	width: 140px;
+	width: 160px;
 }
 .filter-card.range-card .laporan-filter-apply {
 	padding: 6px 10px;
@@ -371,15 +385,7 @@
 	font-weight: 700;
 }
 
-.filter-card.format-card .filter-item-label {
-	margin-bottom: 0;
-	margin-right: 8px;
-	white-space: nowrap;
-	max-width: 120px;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	display: block;
-}
+/* Export card uses standard label-above-control layout (no truncation) */
 /* Place filter cards into grid columns 1/2/3 to align with summary cards */
 .filter-card.year-card { grid-column: 1 }
 .filter-card.month-card { grid-column: 2 }
