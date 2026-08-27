@@ -25,6 +25,10 @@ function LaporanBulananPemilik() {
 	const currentYear = new Date().getFullYear().toString();
 	const [tahun, setTahun] = useState(currentYear);
 	const [bulan, setBulan] = useState("01");
+	const getLastDayOfMonth = (y, m) => new Date(Number(y), Number(m), 0).getDate();
+	const defaultStart = `${currentYear}-${String(1).padStart(2,'0')}`; // placeholder, will set below
+	const [startDate, setStartDate] = useState('');
+	const [endDate, setEndDate] = useState('');
 	const [exportFormat, setExportFormat] = useState('pdf');
 	const [laporanData, setLaporanData] = useState({
 		totalPemasukan: 0,
@@ -52,6 +56,10 @@ function LaporanBulananPemilik() {
 	const [error, setError] = useState(null);
 
 	useEffect(() => {
+		// initialize default start/end to selected month
+		const last = getLastDayOfMonth(tahun, bulan);
+		setStartDate(`${tahun}-${String(bulan).padStart(2,'0')}-01`);
+		setEndDate(`${tahun}-${String(bulan).padStart(2,'0')}-${String(last).padStart(2,'0')}`);
 		fetchLaporan();
 		fetchPengeluaranKategori();
 		fetchMenuSalesBulanan(menuFilterBulanan);
@@ -90,7 +98,13 @@ function LaporanBulananPemilik() {
 			setLoading(true);
 			setError(null);
 			const token = localStorage.getItem('token');
-			const response = await fetch(`${API}/api/owner/laporan-bulanan?bulan=${tahun}-${bulan}`, {
+				let url = `${API}/api/owner/laporan-bulanan`;
+				if (startDate && endDate) {
+					url += `?start=${startDate}&end=${endDate}`;
+				} else {
+					url += `?bulan=${tahun}-${bulan}`;
+				}
+				const response = await fetch(url, {
 				headers: {
 					'Authorization': `Bearer ${token}`
 				}
@@ -185,13 +199,14 @@ function LaporanBulananPemilik() {
 			const pageWidth = doc.internal.pageSize.getWidth();
 			const pageHeight = doc.internal.pageSize.getHeight();
 			const monthName = bulanNames[parseInt(bulan, 10) - 1];
+			const titleLabel = (startDate && endDate) ? `${startDate} - ${endDate}` : `${monthName} ${tahun}`;
 			// Header centered
 			doc.setFontSize(16);
 			doc.text('LAPORAN KEUANGAN BULANAN', pageWidth / 2, 18, { align: 'center' });
 			doc.setFontSize(12);
 			doc.text('KASIR MICHI', pageWidth / 2, 26, { align: 'center' });
 			doc.setFontSize(11);
-			doc.text(`${monthName} ${tahun}`, pageWidth / 2, 34, { align: 'center' });
+			doc.text(titleLabel, pageWidth / 2, 34, { align: 'center' });
 			let startY = 44;
 			// Summary
 			doc.setFontSize(10);
@@ -292,12 +307,13 @@ function LaporanBulananPemilik() {
 		logAktivitas('Export Excel Laporan Bulanan');
 		try {
 			const monthName = bulanNames[parseInt(bulan, 10) - 1];
+			const titleLabel = (startDate && endDate) ? `${startDate} - ${endDate}` : `${monthName} ${tahun}`;
 			const fileName = `Laporan_${monthName}_${tahun}.xlsx`;
 			const wb = XLSX.utils.book_new();
 			const aoa = [];
 			// Title and month/year
 			aoa.push(["LAPORAN KEUANGAN BULANAN - KASIR MICHI"]);
-			aoa.push([`${monthName} ${tahun}`]);
+			aoa.push([titleLabel]);
 			aoa.push([]);
 			// Summary rows
 			aoa.push(["Total Pemasukan", `Rp ${Number(laporanData.totalPemasukan).toLocaleString('id-ID')}`]);
@@ -485,6 +501,15 @@ function LaporanBulananPemilik() {
 							<option value="11">November</option>
 							<option value="12">Desember</option>
 						</select>
+					</div>
+					<div className="filter-card range-card">
+						<label className="filter-item-label">Pilih Rentang Tanggal</label>
+						<div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+							<input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
+							<span style={{ padding: '0 6px' }}>—</span>
+							<input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
+							<button className="laporan-filter-apply" onClick={fetchLaporan} style={{ marginLeft: 8 }}>Apply</button>
+						</div>
 					</div>
 					<div className="filter-card format-card">
 						<label className="filter-item-label">Export laporan</label>
