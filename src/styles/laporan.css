@@ -263,11 +263,11 @@
 .laporan-top-row {
 	display: grid;
 	/* balanced columns: fixed filters and flexible export column to fill remaining space */
-	grid-template-columns: 220px 220px 420px minmax(240px, 1fr); /* year, month, range, export */
-	gap: 24px;
+	grid-template-columns: 220px 220px 440px minmax(360px, 1fr); /* year, month, range, export */
+	gap: 28px;
 	width: 100%;
 	max-width: 1500px;
-	margin: 0px auto 18px auto;
+	margin: 0px auto 20px auto;
 	align-items: start;
 	box-sizing: border-box;
 }
@@ -291,24 +291,25 @@
 }
 .filter-card.year-card { flex: 1 1 160px; max-width: 220px; }
 .filter-card.month-card { flex: 1 1 160px; max-width: 220px; }
-.filter-card.range-card { max-width: 420px; }
+.filter-card.range-card { max-width: 480px; }
 .filter-card.format-card {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
 	gap: 8px;
-	max-width: 380px;
+	max-width: 520px; /* wider export card so right side looks balanced */
 	justify-content: center;
 }
 .filter-card.format-card .filter-card-content {
 	width: 100%;
 	display: flex;
-	gap: 10px;
+	gap: 24px; /* more gap between PDF select and Download */
 	align-items: center;
 	justify-content: flex-start; /* place PDF and Download side-by-side starting at left */
 }
-.filter-card.format-card .laporan-filter-select { width: 120px; padding: 6px 8px; font-size: 0.95rem; }
-.filter-card.format-card .download-btn { flex: 0 0 auto; padding: 8px 14px; border-radius: 8px; font-size: 0.95rem; }
+.filter-card.format-card .filter-card-content { flex-wrap: nowrap; }
+.filter-card.format-card .laporan-filter-select { width: 160px !important; padding: 6px 8px; font-size: 0.95rem; }
+.filter-card.format-card .download-btn { flex: 0 0 auto; padding: 10px 18px; border-radius: 8px; font-size: 0.95rem; }
 .download-btn {
 		padding: 8px 12px;
 		border-radius: 1px;
@@ -341,11 +342,8 @@
 }
 
 .filter-card.range-card .filter-card-content {
-    flex-wrap: wrap;
-}
-.filter-card.range-card .laporan-filter-apply {
-    margin-left: 0;
-    margin-top: 6px;
+	flex-wrap: nowrap; /* prefer single-line layout for inputs + Apply */
+	align-items: center;
 }
 .filter-card.range-card input[type="date"] {
 	padding: 8px 10px;
@@ -354,15 +352,16 @@
 	border-radius: 6px;
 	border: 1px solid #f3d6d9;
 	background: #fff;
-	width: 160px;
+	width: 120px; /* narrower so Apply fits inline */
 }
 .filter-card.range-card .laporan-filter-apply {
-	padding: 6px 10px;
+	padding: 8px 12px;
 	border-radius: 6px;
 	border: none;
 	background: linear-gradient(90deg,#ff7a5c,#ffd166);
 	color: #fff;
 	cursor: pointer;
+	margin-left: 12px;
 }
 
 /* ensure the download button stays inside the export card and doesn't overflow */
