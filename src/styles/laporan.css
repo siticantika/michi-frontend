@@ -262,11 +262,11 @@
 /* Top row: combined filter card + export card */
 .laporan-top-row {
 	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	gap: 48px; /* increased gap so year, month, export boxes have more space */
+	grid-template-columns: repeat(4, 1fr); /* year, month, range, export */
+	gap: 18px; /* tighter gap so controls fit on one row */
 	width: 100%;
 	max-width: 1500px;
-	margin: 0px auto 14px auto; /* less vertical gap so cards sit closer under title */
+	margin: 0px auto 14px auto;
 	align-items: center;
 	box-sizing: border-box;
 }
@@ -274,23 +274,24 @@
 /* keep filter cards fixed-sized inside the top row so widths align exactly */
 .laporan-top-row > .filter-card { flex: 0 0 auto; }
 .filter-card {
-	flex: 1 1 320px; /* default card base */
-	max-width: 380px; /* keep cards compact */
+	flex: 1 1 180px;
+	max-width: 320px;
 	background: #fff;
 	border: 2px solid #ffd6e0;
-	border-radius: 18px;
-	padding: 25px 40px; /* slightly less padding */
+	border-radius: 12px;
+	padding: 12px 14px; /* compact padding */
 	box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	gap: 20px;
+	gap: 10px;
 }
-.filter-card.year-card { flex: 1 1 var(--summary-card-fixed); max-width: var(--summary-card-fixed); }
-.filter-card.month-card { flex: 1 1 var(--summary-card-fixed); max-width: var(--summary-card-fixed); }
-.filter-card.format-card { display: flex; align-items: center; gap: 20px; /* removed margin-left:auto so spacing controlled by gap */ flex: 1 1 var(--summary-card-fixed); max-width: var(--summary-card-fixed); }
-.filter-card.format-card .laporan-filter-select { width: 180px; padding: 8px 12px; }
-.filter-card.format-card .download-btn { flex: 0 0 auto; min-width: 0; padding: 9px 25px; border-radius: 10px; }
+.filter-card.year-card { flex: 1 1 160px; max-width: 220px; }
+.filter-card.month-card { flex: 1 1 160px; max-width: 220px; }
+.filter-card.range-card { flex: 1 1 260px; max-width: 360px; }
+.filter-card.format-card { display: flex; align-items: center; gap: 10px; flex: 1 1 200px; max-width: 280px; }
+.filter-card.format-card .laporan-filter-select { width: 120px; padding: 6px 8px; font-size: 0.9rem; }
+.filter-card.format-card .download-btn { flex: 0 0 auto; min-width: 0; padding: 8px 14px; border-radius: 8px; font-size: 0.9rem; }
 .download-btn {
 		padding: 8px 12px;
 		border-radius: 1px;
@@ -307,20 +308,32 @@
 }
 
 /* narrower selects per card to match mock */
-.filter-card.year-card .laporan-filter-select {
-	width: 220px;
-	padding: 8px 20px;
-	font-size: 0.98rem;
-}
+.filter-card.year-card .laporan-filter-select,
 .filter-card.month-card .laporan-filter-select {
-	width: 220px;
-	padding: 8px 20px;
-	font-size: 0.98rem;
+	width: 160px;
+	padding: 6px 10px;
+	font-size: 0.9rem;
 }
 .filter-card-content {
 	display: flex;
 	gap: 18px;
 	align-items: center;
+}
+.filter-card.range-card input[type="date"] {
+	padding: 6px 8px;
+	font-size: 0.9rem;
+	height: 34px;
+	border-radius: 6px;
+	border: 1px solid #f3d6d9;
+	background: #fff;
+}
+.filter-card.range-card .laporan-filter-apply {
+	padding: 6px 10px;
+	border-radius: 6px;
+	border: none;
+	background: linear-gradient(90deg,#ff7a5c,#ffd166);
+	color: #fff;
+	cursor: pointer;
 }
 .filter-item {
 	display: flex;
@@ -337,7 +350,8 @@
 /* Place filter cards into grid columns 1/2/3 to align with summary cards */
 .filter-card.year-card { grid-column: 1 }
 .filter-card.month-card { grid-column: 2 }
-.filter-card.format-card { grid-column: 3 }
+.filter-card.range-card { grid-column: 3 }
+.filter-card.format-card { grid-column: 4 }
 
 /* Place summary cards in a single row using flexbox (no grid placement) */
 /* (No explicit grid-column rules - use flex distribution above) */
