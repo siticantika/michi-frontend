@@ -262,8 +262,9 @@
 /* Top row: combined filter card + export card */
 .laporan-top-row {
 	display: grid;
-	grid-template-columns: repeat(4, 1fr); /* year, month, range, export */
-	gap: 18px; /* tighter gap so controls fit on one row */
+	/* fixed column widths to keep consistent spacing */
+	grid-template-columns: 220px 220px 360px 260px; /* year, month, range, export */
+	gap: 20px;
 	width: 100%;
 	max-width: 1500px;
 	margin: 0px auto 14px auto;
@@ -274,22 +275,22 @@
 /* keep filter cards fixed-sized inside the top row so widths align exactly */
 .laporan-top-row > .filter-card { flex: 0 0 auto; }
 .filter-card {
-	flex: 1 1 180px;
-	max-width: 320px;
 	background: #fff;
 	border: 2px solid #ffd6e0;
 	border-radius: 12px;
-	padding: 12px 14px; /* compact padding */
+	padding: 10px 12px; /* compact padding */
 	box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	gap: 10px;
+	min-height: 48px;
+	box-sizing: border-box;
 }
 .filter-card.year-card { flex: 1 1 160px; max-width: 220px; }
 .filter-card.month-card { flex: 1 1 160px; max-width: 220px; }
-.filter-card.range-card { flex: 1 1 260px; max-width: 360px; }
-.filter-card.format-card { display: flex; align-items: center; gap: 10px; flex: 1 1 200px; max-width: 280px; }
+.filter-card.range-card { max-width: 360px; }
+.filter-card.format-card { display: flex; align-items: center; gap: 10px; max-width: 260px; justify-content: flex-end; }
 .filter-card.format-card .laporan-filter-select { width: 120px; padding: 6px 8px; font-size: 0.9rem; }
 .filter-card.format-card .download-btn { flex: 0 0 auto; min-width: 0; padding: 8px 14px; border-radius: 8px; font-size: 0.9rem; }
 .download-btn {
@@ -326,6 +327,7 @@
 	border-radius: 6px;
 	border: 1px solid #f3d6d9;
 	background: #fff;
+	width: 140px;
 }
 .filter-card.range-card .laporan-filter-apply {
 	padding: 6px 10px;
@@ -334,6 +336,22 @@
 	background: linear-gradient(90deg,#ff7a5c,#ffd166);
 	color: #fff;
 	cursor: pointer;
+}
+
+/* ensure the download button stays inside the export card and doesn't overflow */
+.filter-card.format-card .download-btn {
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+@media (max-width: 1100px) {
+	.laporan-top-row { grid-template-columns: 180px 180px 1fr 220px; }
+	.filter-card.range-card input[type="date"] { width: 120px; }
+}
+
+@media (max-width: 760px) {
+	.laporan-top-row { grid-template-columns: 1fr; gap: 12px; }
+	.filter-card.format-card { justify-content: flex-start; }
 }
 .filter-item {
 	display: flex;
