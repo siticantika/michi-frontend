@@ -263,7 +263,7 @@
 .laporan-top-row {
 	display: grid;
 	/* fixed column widths to keep consistent spacing */
-	grid-template-columns: 220px 220px 360px 260px; /* year, month, range, export */
+	grid-template-columns: 220px 220px 400px 400px; /* year, month, range, export */
 	gap: 20px;
 	width: 100%;
 	max-width: 1500px;
