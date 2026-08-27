@@ -281,16 +281,18 @@
 	padding: 10px 12px; /* compact padding */
 	box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 10px;
-	min-height: 48px;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: center;
+	gap: 6px;
+	min-height: 56px;
 	box-sizing: border-box;
+	overflow: hidden;
 }
 .filter-card.year-card { flex: 1 1 160px; max-width: 220px; }
 .filter-card.month-card { flex: 1 1 160px; max-width: 220px; }
 .filter-card.range-card { max-width: 360px; }
-.filter-card.format-card { display: flex; align-items: center; gap: 10px; max-width: 260px; justify-content: flex-end; }
+.filter-card.format-card { display: flex; flex-direction: row; align-items: center; gap: 10px; max-width: 260px; justify-content: flex-end; }
 .filter-card.format-card .laporan-filter-select { width: 120px; padding: 6px 8px; font-size: 0.9rem; }
 .filter-card.format-card .download-btn { flex: 0 0 auto; min-width: 0; padding: 8px 14px; border-radius: 8px; font-size: 0.9rem; }
 .download-btn {
@@ -311,10 +313,13 @@
 /* narrower selects per card to match mock */
 .filter-card.year-card .laporan-filter-select,
 .filter-card.month-card .laporan-filter-select {
-	width: 160px;
+	width: 100%;
 	padding: 6px 10px;
-	font-size: 0.9rem;
+	font-size: 0.95rem;
 }
+
+/* ensure selects inside any filter-card take full width when stacked */
+.filter-card .laporan-filter-select { width: 100%; }
 .filter-card-content {
 	display: flex;
 	gap: 18px;
@@ -358,12 +363,22 @@
 	flex-direction: column;
 }
 .filter-item-label {
-	font-size: 1.15rem;
+	font-size: 1rem;
 	color: #6d2c00;
-	margin-bottom: 0;
+	margin-bottom: 6px;
 	margin-right: 1px;
-	white-space: nowrap;
+	white-space: normal;
 	font-weight: 700;
+}
+
+.filter-card.format-card .filter-item-label {
+	margin-bottom: 0;
+	margin-right: 8px;
+	white-space: nowrap;
+	max-width: 120px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: block;
 }
 /* Place filter cards into grid columns 1/2/3 to align with summary cards */
 .filter-card.year-card { grid-column: 1 }
