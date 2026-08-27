@@ -504,7 +504,7 @@ function LaporanBulananPemilik() {
 					</div>
 					<div className="filter-card range-card">
 						<label className="filter-item-label">Pilih Rentang Tanggal</label>
-						<div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+						<div className="filter-card-content">
 							<input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
 							<span style={{ padding: '0 6px' }}>—</span>
 							<input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
@@ -513,11 +513,13 @@ function LaporanBulananPemilik() {
 					</div>
 					<div className="filter-card format-card">
 						<label className="filter-item-label">Export laporan</label>
-						<select className="laporan-filter-select" value={exportFormat} onChange={e => setExportFormat(e.target.value)}>
-							<option value="pdf">PDF</option>
-							<option value="excel">Excel</option>
-						</select>
-						<button className="download-btn" onClick={handleDownload}>Download</button>
+						<div className="filter-card-content">
+							<select className="laporan-filter-select" value={exportFormat} onChange={e => setExportFormat(e.target.value)}>
+								<option value="pdf">PDF</option>
+								<option value="excel">Excel</option>
+							</select>
+							<button className="download-btn" onClick={handleDownload}>Download</button>
+						</div>
 					</div>
 				</div>
 				<div className="laporan-cards">
