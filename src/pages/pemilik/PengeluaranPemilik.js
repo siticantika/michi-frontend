@@ -13,6 +13,7 @@ function PengeluaranPemilik() {
   const [form, setForm] = useState({ tanggal: "", waktu: "", keterangan: "", kategori_pengeluaran: "", kategori_baru: "", jumlah: "" });
   const [editingItem, setEditingItem] = useState(null);
   const [categoryOptions, setCategoryOptions] = useState(defaultCategoryOptions);
+  const [errorMsg, setErrorMsg] = useState('');
 
   // Saat halaman dibuka, data pengeluaran akan langsung diambil dari backend.
   // Tujuannya agar owner bisa melihat catatan pengeluaran hari ini tanpa refresh manual.
@@ -78,6 +79,11 @@ function PengeluaranPemilik() {
   };
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  // clear error message when user types
+  const handleChangeWithClear = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+    if (errorMsg) setErrorMsg('');
+  };
 
   const getFinalCategory = () => {
     const customCategory = form.kategori_baru?.trim();
@@ -89,7 +95,16 @@ function PengeluaranPemilik() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const finalCategory = getFinalCategory();
-    if (!finalCategory) return;
+    // validate: keterangan, jumlah > 0, and category (existing or new) must be provided
+    const keteranganValid = (form.keterangan || '').toString().trim() !== '';
+    const jumlahValid = form.jumlah !== '' && !isNaN(Number(form.jumlah)) && Number(form.jumlah) > 0;
+    const kategoriValid = finalCategory && finalCategory.trim() !== '';
+
+    if (!keteranganValid || !jumlahValid || !kategoriValid) {
+      setErrorMsg('Lengkapi data pengeluaran');
+      return;
+    }
+    setErrorMsg('');
 
     try {
       const token = localStorage.getItem("token");
@@ -228,7 +243,7 @@ function PengeluaranPemilik() {
               <form className="pemasukan-popup-form" onSubmit={handleSubmit}>
                 <div className="pemasukan-popup-field">
                   <label>Keterangan Pengeluaran</label>
-                  <input type="text" name="keterangan" value={form.keterangan} onChange={handleChange} required className="pemasukan-popup-input" />
+                  <input type="text" name="keterangan" value={form.keterangan} onChange={handleChangeWithClear} required className="pemasukan-popup-input" />
                 </div>
 
                 <div className="pemasukan-popup-field">
@@ -236,7 +251,7 @@ function PengeluaranPemilik() {
                   <select
                     name="kategori_pengeluaran"
                     value={form.kategori_pengeluaran}
-                    onChange={handleChange}
+                    onChange={handleChangeWithClear}
                     className="pemasukan-popup-input pemasukan-popup-select"
                   >
                     <option value="">Pilih kategori</option>
@@ -252,7 +267,7 @@ function PengeluaranPemilik() {
                     type="text"
                     name="kategori_baru"
                     value={form.kategori_baru}
-                    onChange={handleChange}
+                    onChange={handleChangeWithClear}
                     className="pemasukan-popup-input"
                     placeholder="Masukkan kategori baru"
                   />
@@ -264,13 +279,16 @@ function PengeluaranPemilik() {
                     type="number"
                     name="jumlah"
                     value={form.jumlah}
-                    onChange={handleChange}
+                    onChange={handleChangeWithClear}
                     required
                     className="pemasukan-popup-input"
                     placeholder="Masukkan jumlah pengeluaran"
                     min="0"
                   />
                 </div>
+                {errorMsg && (
+                  <div style={{ color: '#b00020', fontWeight: 700, marginTop: 6 }}>{errorMsg}</div>
+                )}
 
                 <button type="submit" className="pemasukan-popup-btn">💾 {editingItem ? "Simpan Perubahan" : "Simpan Pengeluaran"}</button>
               </form>
