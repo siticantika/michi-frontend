@@ -102,7 +102,21 @@ function DashboardAdmin(){
       const res = await fetch(url, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      const data = await res.json();
+      if (!res.ok) {
+        const text = await res.text().catch(()=>'<no body>');
+        console.error('Activity-log response not OK', res.status, text);
+        setActivityLog([]);
+        return;
+      }
+      let data;
+      try {
+        data = await res.json();
+      } catch (e) {
+        const text = await res.text().catch(()=>'<no body>');
+        console.error('Activity-log invalid JSON response', text);
+        setActivityLog([]);
+        return;
+      }
       console.log('Log data received:', Array.isArray(data) ? data.length : 0, 'rows');
       const arr = Array.isArray(data) ? data : [];
       arr.sort((a, b) => new Date(b.waktu) - new Date(a.waktu));
