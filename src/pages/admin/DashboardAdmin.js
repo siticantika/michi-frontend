@@ -98,6 +98,13 @@ function DashboardAdmin(){
       
       const params = new URLSearchParams({ tanggal: tanggalParam });
       if (aksi) params.set('aksi', aksi);
+      // include client timezone offset (minutes) so server can compare dates in client local time
+      try {
+        const tzOffset = String(new Date().getTimezoneOffset());
+        params.set('tzOffset', tzOffset);
+      } catch (e) {
+        // ignore
+      }
       
       console.log('Fetching log untuk tanggal:', tanggalParam, 'aksi:', aksi || 'semua');
       
