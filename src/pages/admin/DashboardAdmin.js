@@ -89,11 +89,8 @@ function DashboardAdmin(){
       
       let tanggalParam = tanggal;
       if (!tanggalParam) {
-        // Ambil tanggal hari ini sesuai timezone lokal
-        const now = new Date();
-        const offset = now.getTimezoneOffset();
-        const localDate = new Date(now.getTime() - (offset * 60 * 1000));
-        tanggalParam = localDate.toISOString().split('T')[0];
+        // Ambil tanggal hari ini sesuai timezone lokal in YYYY-MM-DD
+        tanggalParam = new Date().toLocaleDateString('en-CA'); // e.g. 2026-08-31
       }
       
       const params = new URLSearchParams({ tanggal: tanggalParam });
@@ -432,8 +429,14 @@ function DashboardAdmin(){
                 {(() => {
                   const filteredLog = filterTanggal
                     ? activityLog.filter(item => {
-                        const itemDate = new Date(item.waktu).toISOString().split('T')[0];
-                        return itemDate === filterTanggal;
+                        // compare using local date (matching displayed waktu)
+                        try {
+                          const d = new Date(item.waktu);
+                          const itemDate = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+                          return itemDate === filterTanggal;
+                        } catch (e) {
+                          return false;
+                        }
                       })
                     : activityLog;
                   const totalPages = Math.max(1, Math.ceil(filteredLog.length / itemsPerPage));
