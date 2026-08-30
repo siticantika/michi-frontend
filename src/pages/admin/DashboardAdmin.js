@@ -133,10 +133,21 @@ function DashboardAdmin(){
 
   // saat filter tanggal berubah, panggil fetchActivityLog
   const handleFilterTanggal = (e) => {
-    const val = e.target.value;
-    setFilterTanggal(val);
-    filterTanggalRef.current = val;
-    fetchActivityLog(val, filterAksiRef.current || '');
+    let val = e.target.value;
+    // normalize common formats to YYYY-MM-DD (en-CA) for both UI and API
+    let normalized = val;
+    if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(val)) {
+      // MM/DD/YYYY -> YYYY-MM-DD
+      const parts = val.split('/');
+      normalized = `${parts[2]}-${parts[0].padStart(2, '0')}-${parts[1].padStart(2, '0')}`;
+    } else if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(val)) {
+      // try Date parse fallback
+      const d = new Date(val);
+      if (!Number.isNaN(d.getTime())) normalized = d.toISOString().slice(0, 10);
+    }
+    setFilterTanggal(normalized);
+    filterTanggalRef.current = normalized;
+    fetchActivityLog(normalized, filterAksiRef.current || '');
   };
 
   const handleFilterAksi = (e) => {
