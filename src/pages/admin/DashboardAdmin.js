@@ -28,7 +28,10 @@ function DashboardAdmin(){
     // poll online users & activity log periodically so admin sees updates shortly after logout
       const interval = setInterval(() => {
         fetchOnlineUsers();
-        fetchActivityLog(filterTanggalRef.current || '', filterAksiRef.current || '');
+        // only refresh activity log automatically when no manual filter is active
+        if (!filterTanggalRef.current && !filterAksiRef.current) {
+          fetchActivityLog('', '');
+        }
       }, 8000);
 
     const onVisible = () => {
@@ -105,7 +108,7 @@ function DashboardAdmin(){
       if (!res.ok) {
         const text = await res.text().catch(()=>'<no body>');
         console.error('Activity-log response not OK', res.status, text);
-        setActivityLog([]);
+        // keep existing activityLog when server returns error to avoid flashing empty table
         return;
       }
       let data;
@@ -114,7 +117,7 @@ function DashboardAdmin(){
       } catch (e) {
         const text = await res.text().catch(()=>'<no body>');
         console.error('Activity-log invalid JSON response', text);
-        setActivityLog([]);
+        // keep previous data rather than clearing
         return;
       }
       console.log('Log data received:', Array.isArray(data) ? data.length : 0, 'rows');
