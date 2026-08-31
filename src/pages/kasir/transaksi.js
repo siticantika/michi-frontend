@@ -98,12 +98,15 @@ React.useEffect(() => {
       });
 
       const normalized = (res.data || []).map(r => {
-        const itemsRaw = r.items ?? r.detail ?? r.menu ?? r.menus;
-        return {
-          ...r,
-          items: parseItems(itemsRaw)
-        };
-      });
+  const itemsRaw = r.items ?? r.detail ?? r.menu ?? r.menus;
+
+  return {
+    ...r,
+    total: Number(r.total || 0),
+    selesai: Number(r.selesai || 0),
+    items: parseItems(itemsRaw)
+  };
+});
 
       setTransaksiList(normalized);
 
@@ -217,8 +220,8 @@ React.useEffect(() => {
       </label>
     </div>
     <div className="card-total">
-      Rp {row.total.toLocaleString('id-ID')}
-    </div>
+  Rp {Number(row.total || 0).toLocaleString('id-ID')}
+</div>
   </div>
 
   {/* ITEMS */}
