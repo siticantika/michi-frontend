@@ -53,28 +53,29 @@ function PengeluaranPemilik() {
 
   // Saat tombol tambah diklik, form popup dibuka dan state form dikosongkan.
   // Ini memudahkan owner untuk memasukkan pengeluaran baru.
-  const handleOpenPopup = () => {
-    setEditingItem(null);
-    // default waktu to client's current time (HH:MM:SS)
-    const now = new Date();
-    const pad = (n) => String(n).padStart(2, '0');
-    const defaultWaktu = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-    setForm({ tanggal: "", waktu: defaultWaktu, keterangan: "", kategori_pengeluaran: "", kategori_baru: "", jumlah: "" });
-    setShowPopup(true);
-  };
+const handleOpenPopup = () => {
+  setEditingItem(null);
 
-  const handleEditClick = (item) => {
-    setEditingItem(item);
-    setForm({
-      tanggal: item.tanggal || "",
-      waktu: item.waktu || "",
-      keterangan: item.keterangan || "",
-      kategori_pengeluaran: defaultCategoryOptions.includes(item.kategori_pengeluaran) ? item.kategori_pengeluaran : "",
-      kategori_baru: defaultCategoryOptions.includes(item.kategori_pengeluaran) ? "" : item.kategori_pengeluaran || "",
-      jumlah: item.jumlah || ""
-    });
-    setShowPopup(true);
-  };
+  const now = new Date();
+  const pad = (n) => String(n).padStart(2, "0");
+
+  const tanggal =
+    `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+
+  const waktu =
+    `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+  setForm({
+    tanggal: tanggal,
+    waktu: waktu,
+    keterangan: "",
+    kategori_pengeluaran: "",
+    kategori_baru: "",
+    jumlah: ""
+  });
+
+  setShowPopup(true);
+};
 
   const handleClosePopup = () => {
     setEditingItem(null);
@@ -113,11 +114,12 @@ function PengeluaranPemilik() {
     try {
       const token = localStorage.getItem("token");
       const body = {
-        keterangan: form.keterangan,
-        jumlah: form.jumlah,
-        kategori_pengeluaran: finalCategory,
-        waktu: form.waktu
-      };
+  tanggal: form.tanggal,
+  waktu: form.waktu,
+  keterangan: form.keterangan,
+  jumlah: form.jumlah,
+  kategori_pengeluaran: finalCategory
+};
 
       let res;
       if (editingItem && editingItem.id) {
@@ -168,23 +170,23 @@ function PengeluaranPemilik() {
   // Prefer displaying the combined tanggal+waktu interpreted as UTC and converted
   // to the client's local timezone. This corrects rows stored in UTC so they show
   // the user's local time. We keep this logic isolated to UI formatting only.
-  const formatDisplayTime = (tanggalIso, waktuStr) => {
-    if (!tanggalIso || !waktuStr) return '-';
-    try {
-      // tanggalIso is like '2026-08-31T00:00:00.000Z'
-      const base = new Date(tanggalIso); // midnight UTC
-      const parts = waktuStr.split(':');
-      const hh = Number(parts[0] || 0);
-      const mm = Number(parts[1] || 0);
-      const ss = Number(parts[2] || 0);
-      // create a Date object representing the UTC datetime
-      const dtUtc = new Date(Date.UTC(base.getUTCFullYear(), base.getUTCMonth(), base.getUTCDate(), hh, mm, ss));
-      // format to client's locale in 12-hour format
-      return dtUtc.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-    } catch (e) {
-      return formatTime(waktuStr);
-    }
-  };
+  const formatDisplayTime = (waktuStr) => {
+  if (!waktuStr) return "-";
+
+  const parts = waktuStr.toString().split(":");
+
+  let hh = parseInt(parts[0], 10);
+  const mm = parts[1] ? parts[1].padStart(2, "0") : "00";
+
+  if (isNaN(hh)) return "-";
+
+  const ampm = hh >= 12 ? "PM" : "AM";
+
+  hh = hh % 12;
+  if (hh === 0) hh = 12;
+
+  return `${String(hh).padStart(2, "0")}:${mm} ${ampm}`;
+};
 
   return (
     <div className="pengeluaran-owner-bg">
@@ -244,7 +246,7 @@ function PengeluaranPemilik() {
                   {pengeluaranList.length > 0 ? (
                     pengeluaranList.map((item, idx) => (
                       <tr key={item.id || idx}>
-                        <td>{formatDisplayTime(item.tanggal, item.waktu)}</td>
+                        <td>{formatDisplayTime(item.waktu)}</td>
                         <td>{item.kategori_pengeluaran || '-'}</td>
                         <td>{item.keterangan}</td>
                         <td>{formatCurrency(parseInt(item.jumlah || 0, 10))}</td>
