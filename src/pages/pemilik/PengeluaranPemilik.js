@@ -159,6 +159,12 @@ function PengeluaranPemilik() {
     return t.length >= 5 ? t.substring(0, 5) : t;
   };
 
+  const getCurrentTimeShort = () => {
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  };
+
   return (
     <div className="pengeluaran-owner-bg">
       <header className="dashboard-header">
@@ -283,8 +289,8 @@ function PengeluaranPemilik() {
                   <input
                     type="time"
                     name="waktu"
-                    value={form.waktu ? (form.waktu.length >= 5 ? form.waktu.substring(0,5) : form.waktu) : ''}
-                    onChange={handleChangeWithClear}
+                    value={editingItem ? (form.waktu ? (form.waktu.length >= 5 ? form.waktu.substring(0,5) : form.waktu) : '') : getCurrentTimeShort()}
+                    readOnly
                     className="pemasukan-popup-input"
                   />
                 </div>
