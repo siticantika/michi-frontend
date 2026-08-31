@@ -161,6 +161,21 @@ function LaporanBulananPemilik() {
 		return t.length >= 5 ? t.substring(0,5) : t;
 	};
 
+	const formatDisplayTime = (tanggalIso, waktuStr) => {
+		if (!tanggalIso || !waktuStr) return '-';
+		try {
+			const base = new Date(tanggalIso);
+			const parts = waktuStr.split(':');
+			const hh = Number(parts[0] || 0);
+			const mm = Number(parts[1] || 0);
+			const ss = Number(parts[2] || 0);
+			const dtUtc = new Date(Date.UTC(base.getUTCFullYear(), base.getUTCMonth(), base.getUTCDate(), hh, mm, ss));
+			return dtUtc.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+		} catch (e) {
+			return formatTime(waktuStr);
+		}
+	};
+
 	const getBadgeClass = (ditambahkanOleh) => {
   	switch (ditambahkanOleh?.toLowerCase()) {
     case 'kasir':
@@ -223,7 +238,7 @@ function LaporanBulananPemilik() {
 			const head = [['Tanggal', 'Jam', 'Jenis', 'Kategori', 'Keterangan', 'Jumlah', 'Ditambahkan Oleh']];
 			const body = (sortedTransaksi || []).map(item => {
 				const tanggal = item.tanggal ? (new Date(item.tanggal)).toLocaleDateString('id-ID') : '-';
-				const waktu = formatTime(item.waktu || '-');
+				const waktu = formatDisplayTime(item.tanggal, item.waktu || '-');
 				const jenisRaw = item.jenis || '-';
 				const jenis = jenisRaw ? (jenisRaw.charAt(0).toUpperCase() + jenisRaw.slice(1)) : '-';
 				const kategori = jenisRaw === 'pengeluaran' ? (item.kategori_pengeluaran || '-') : '-';
@@ -325,7 +340,7 @@ function LaporanBulananPemilik() {
 			// Data rows (include Kategori column)
 			(sortedTransaksi || []).forEach(item => {
 				const tanggal = item.tanggal ? (new Date(item.tanggal)).toLocaleDateString('id-ID') : '-';
-				const waktu = formatTime(item.waktu || '-');
+				const waktu = formatDisplayTime(item.tanggal, item.waktu || '-');
 				const jenisRaw = item.jenis || '-';
 				const jenis = jenisRaw ? (jenisRaw.charAt(0).toUpperCase() + jenisRaw.slice(1)) : '-';
 				const kategori = jenisRaw === 'pengeluaran' ? (item.kategori_pengeluaran || '-') : '-';
@@ -409,14 +424,14 @@ function LaporanBulananPemilik() {
 			if (!item) return 0;
 			if (item.ts) return Number(item.ts) * 1000; // backend ts in seconds -> ms
 			try {
-				const dt = new Date(`${item.tanggal} ${item.waktu}`);
-				if (!isNaN(dt)) return dt.getTime();
-				if (item.tanggal) {
-					const parts = ('' + item.tanggal).split('-');
-					if (parts.length >= 3) {
-						const t = item.waktu || '00:00:00';
-						return new Date(`${parts[0]}-${parts[1]}-${parts[2]}T${t}`).getTime();
-					}
+				// Combine tanggal (may be ISO string) and waktu (HH:MM:SS) as UTC
+				if (item.tanggal && item.waktu) {
+					const base = new Date(item.tanggal);
+					const parts = ('' + item.waktu).split(':');
+					const hh = Number(parts[0] || 0);
+					const mm = Number(parts[1] || 0);
+					const ss = Number(parts[2] || 0);
+					return Date.UTC(base.getUTCFullYear(), base.getUTCMonth(), base.getUTCDate(), hh, mm, ss);
 				}
 			} catch (e) {
 				// ignore
@@ -661,7 +676,7 @@ function LaporanBulananPemilik() {
 											return (
 												<tr key={idx}>
 														<td>{parseDate(item.tanggal)}</td>
-														<td>{formatTime(item.waktu)}</td>
+														<td>{formatDisplayTime(item.tanggal, item.waktu)}</td>
 												<td><span className={item.jenis === "pemasukan" ? "laporan-badge pemasukan" : "laporan-badge pengeluaran"}>{item.jenis}</span></td>
 												<td>{item.jenis === 'pengeluaran' ? (item.kategori_pengeluaran || '-') : '-'}</td>
 												<td>{item.jenis === "pemasukan"
