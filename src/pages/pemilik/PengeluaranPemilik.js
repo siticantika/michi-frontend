@@ -156,13 +156,13 @@ function PengeluaranPemilik() {
 
   const formatTime = (t) => {
     if (!t) return "-";
-    return t.length >= 5 ? t.substring(0, 5) : t;
-  };
-
-  const getCurrentTimeShort = () => {
-    const now = new Date();
-    const pad = (n) => String(n).padStart(2, '0');
-    return `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+    const parts = t.split(":");
+    let hh = parseInt(parts[0], 10);
+    const mm = parts[1] ? parts[1].padStart(2, '0') : '00';
+    const ampm = hh >= 12 ? 'PM' : 'AM';
+    hh = hh % 12;
+    if (hh === 0) hh = 12;
+    return `${String(hh).padStart(2, '0')}:${mm} ${ampm}`;
   };
 
   return (
@@ -284,16 +284,7 @@ function PengeluaranPemilik() {
                   />
                 </div>
 
-                <div className="pemasukan-popup-field">
-                  <label>Waktu</label>
-                  <input
-                    type="time"
-                    name="waktu"
-                    value={editingItem ? (form.waktu ? (form.waktu.length >= 5 ? form.waktu.substring(0,5) : form.waktu) : '') : getCurrentTimeShort()}
-                    readOnly
-                    className="pemasukan-popup-input"
-                  />
-                </div>
+                {/* Waktu diisi otomatis oleh sistem; input dihapus */}
 
                 <div className="pemasukan-popup-field">
                   <label>Jumlah Pengeluaran</label>
