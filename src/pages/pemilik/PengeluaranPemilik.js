@@ -55,7 +55,11 @@ function PengeluaranPemilik() {
   // Ini memudahkan owner untuk memasukkan pengeluaran baru.
   const handleOpenPopup = () => {
     setEditingItem(null);
-    setForm({ tanggal: "", waktu: "", keterangan: "", kategori_pengeluaran: "", kategori_baru: "", jumlah: "" });
+    // default waktu to client's current time (HH:MM:SS)
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    const defaultWaktu = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    setForm({ tanggal: "", waktu: defaultWaktu, keterangan: "", kategori_pengeluaran: "", kategori_baru: "", jumlah: "" });
     setShowPopup(true);
   };
 
@@ -111,7 +115,8 @@ function PengeluaranPemilik() {
       const body = {
         keterangan: form.keterangan,
         jumlah: form.jumlah,
-        kategori_pengeluaran: finalCategory
+        kategori_pengeluaran: finalCategory,
+        waktu: form.waktu
       };
 
       let res;
@@ -270,6 +275,17 @@ function PengeluaranPemilik() {
                     onChange={handleChangeWithClear}
                     className="pemasukan-popup-input"
                     placeholder="Masukkan kategori baru"
+                  />
+                </div>
+
+                <div className="pemasukan-popup-field">
+                  <label>Waktu</label>
+                  <input
+                    type="time"
+                    name="waktu"
+                    value={form.waktu ? (form.waktu.length >= 5 ? form.waktu.substring(0,5) : form.waktu) : ''}
+                    onChange={handleChangeWithClear}
+                    className="pemasukan-popup-input"
                   />
                 </div>
 
