@@ -115,8 +115,7 @@ function PengeluaranPemilik() {
       const body = {
         keterangan: form.keterangan,
         jumlah: form.jumlah,
-        kategori_pengeluaran: finalCategory,
-        waktu: form.waktu
+        kategori_pengeluaran: finalCategory
       };
 
       let res;
