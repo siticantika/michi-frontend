@@ -97,21 +97,6 @@ function PemasukanPemilik() {
 		return t.length >= 5 ? t.substring(0,5) : t;
 	};
 
-		const formatDisplayTime = (tanggalIso, waktuStr) => {
-			if (!tanggalIso || !waktuStr) return '-';
-			try {
-				const base = new Date(tanggalIso);
-				const parts = waktuStr.split(':');
-				const hh = Number(parts[0] || 0);
-				const mm = Number(parts[1] || 0);
-				const ss = Number(parts[2] || 0);
-				const dtUtc = new Date(Date.UTC(base.getUTCFullYear(), base.getUTCMonth(), base.getUTCDate(), hh, mm, ss));
-				return dtUtc.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-			} catch (e) {
-				return formatTime(waktuStr);
-			}
-		};
-
 	if (HIDE_OWNER_PEMASUKAN) return null;
 
 	return (
